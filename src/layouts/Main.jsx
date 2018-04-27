@@ -33,8 +33,10 @@ export default class Main extends React.Component {
 
   componentDidMount () {
     status().then(authed => {
-      if (!this.state.loggedIn && this.state.username !== authed.username) {
-        this.sessionStart(authed.username)
+      if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
+        if (!this.state.loggedIn && this.state.username !== authed.username) { // Anti-loop measures
+          this.sessionStart(authed.username)
+        }
       }
     })
   }

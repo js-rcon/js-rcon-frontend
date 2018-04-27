@@ -62,11 +62,9 @@ export default class LoginCard extends React.Component {
 
       login(username, password).then(result => {
         if (result.loggedIn === true) {
-          console.log('Login success')
           this.setState({ loggingIn: false })
           emitOne('LOGIN_SUCCESS', result.username)
         } else {
-          console.log('Login failure')
           this.setState({ loggingIn: false, failure: true })
         }
       })

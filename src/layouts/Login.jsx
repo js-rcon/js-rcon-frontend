@@ -1,5 +1,6 @@
 import React from 'react'
 import LoginCard from '../components/LoginCard'
+import ErrorOverlay from '../components/ErrorOverlay'
 
 const styles = {
   imageOverrides: {
@@ -12,6 +13,7 @@ export default class Login extends React.Component {
   render () {
     return (
       <div>
+        <ErrorOverlay/>
         <img
           className={'login-logo'}
           style={styles.imageOverrides}

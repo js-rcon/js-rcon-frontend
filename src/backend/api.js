@@ -1,9 +1,11 @@
 import * as SA from 'superagent'
 import * as config from '../config'
+import { emitOne } from './dispatcher'
 
 async function status () {
   let status = {
     loggedIn: false,
+    username: null,
     error: null
   }
 
@@ -16,11 +18,16 @@ async function status () {
     })
     .then(res => {
       if (res.status === 200 && res.body.username) status = { loggedIn: true, username: res.body.username, error: null }
-      else status = { loggedIn: false, username: null, error: null } // TODO: Display this in the UI
+      else status = { loggedIn: false, username: null, error: null }
     })
     .catch(err => {
-      status = { loggedIn: false, error: err }
-      console.error('Unexpected HTTP request error: ' + err)
+      status = { loggedIn: false, username: null, error: err }
+
+      emitOne('REQUEST_ERROR_OVERLAY', {
+        error: err,
+        msg: err.message,
+        code: 'Ghost'
+      })
     })
   return status
 }
@@ -28,6 +35,7 @@ async function status () {
 async function login (username, password) {
   let status = {
     loggedIn: false,
+    username: null,
     error: null
   }
 
@@ -46,10 +54,15 @@ async function login (username, password) {
     .catch(err => {
       status = { loggedIn: false, username: null, error: err }
 
-      // TODO: Display this in the UI
-      // Ignoring 401s in catch because it is harmless and handled client-side
+      // 401s are already handled client-side
       if (err.status === 401) {} // eslint-disable-line brace-style
-      else console.error('Unexpected HTTP request error: ' + err)
+      else {
+        emitOne('REQUEST_ERROR_OVERLAY', {
+          error: err,
+          msg: err.message,
+          code: 'Ghost'
+        })
+      }
     })
   return status
 }
