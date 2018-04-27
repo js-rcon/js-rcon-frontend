@@ -8,3 +8,6 @@ node_modules
 
 # Production build
 build
+
+# Configuration
+src/config.js

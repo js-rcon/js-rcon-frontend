@@ -1,0 +1,23 @@
+// Container that centers the div hosting the form
+.login-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Form content
+.login-inner {
+  padding: 30px;
+  text-align: center;
+}
+
+// Logo shown above the form
+.login-logo {
+  position: absolute;
+  max-width: 100px;
+  height: auto;
+  top: 25%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

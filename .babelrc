@@ -4,6 +4,7 @@
     [ "env", { "modules": false } ]
   ],
   "plugins": [
+    [ "emotion", { "hoist": true } ],
     "react-hot-loader/babel",
     "babel-plugin-transform-object-rest-spread",
     [ "transform-runtime", { "polyfill": false, "regenerator": true } ]
