@@ -14,36 +14,37 @@ export default class Main extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      loggedIn: sessionStorage.getItem('loggedIn') || false,
-      username: sessionStorage.getItem('username') || null
+      loggedIn: false,
+      username: null,
+      token: null
     }
     this.sessionStart = this.sessionStart.bind(this)
     this.sessionEnd = this.sessionEnd.bind(this)
   }
 
-  sessionStart (username) {
-    writeToSessionStorage(['loggedIn:true', `username:${username}`])
+  sessionStart (username, token) {
+    writeToSessionStorage(['loggedIn:true', `username:${username}`, `token:${token}`])
     this.setState({ loggedIn: true, username: username })
   }
 
   sessionEnd () {
-    removeFromSessionStorage(['loggedIn', 'username'])
-    this.setState({ loggedIn: false, username: null })
+    removeFromSessionStorage(['loggedIn', 'username', 'token'])
+    this.setState({ loggedIn: false, username: null, token: null })
   }
 
   componentDidMount () {
     status().then(authed => {
       if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
         if (!this.state.loggedIn && this.state.username !== authed.username) { // Anti-loop measures
-          this.sessionStart(authed.username)
+          this.sessionStart(authed.username, authed.token)
         }
       }
     })
   }
 
   render () {
-    dispatcher.once('LOGIN_SUCCESS', user => {
-      this.sessionStart(user)
+    dispatcher.once('LOGIN_SUCCESS', authDetails => {
+      this.sessionStart(authDetails.username, authDetails.token)
     })
 
     dispatcher.once('LOGOUT', () => {
