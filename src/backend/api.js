@@ -1,6 +1,7 @@
 import * as SA from 'superagent'
 import * as config from '../config'
 import { emitOne } from './dispatcher'
+import { decryptToken } from './encryption'
 
 async function status () {
   let status = {
@@ -10,12 +11,14 @@ async function status () {
     error: null
   }
 
+  const token = decryptToken(sessionStorage.getItem('token'))
+
   await SA
     .get(`${config.api.url}/status`)
     .set({
       ContentType: 'application/json',
       Accept: 'application/json',
-      token: sessionStorage.getItem('token')
+      token: token && token.length > 0 ? token : 'null'
     })
     .then(res => {
       if (res.status === 200 && res.body.username) {

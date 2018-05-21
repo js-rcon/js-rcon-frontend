@@ -1,14 +1,10 @@
 import React from 'react'
 import { status } from '../backend/api'
 
-export default class Login extends React.Component {
+export default class Dashboard extends React.Component {
   render () {
-    status().then(authed => {
-      console.log(authed)
-    })
-
     return (
-      'dashboard'
+      JSON.stringify(this.props.inheritedState)
     )
   }
 }
