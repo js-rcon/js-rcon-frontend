@@ -19,9 +19,11 @@ const ExtractSassPluginConfig = new ExtractTextWebpackPlugin({
   disable: process.env.NODE_ENV !== 'production'
 })
 
-// Plugin config
-const DefinePluginConfig = new webpack.DefinePlugin({
-  'process.env.NODE_ENV': JSON.stringify('production')
+// Environment
+const EnvironmentConfig = new webpack.DefinePlugin({
+  'process.env': {
+    NODE_ENV: JSON.stringify('production')
+  }
 })
 
 // Webpack config
@@ -72,6 +74,11 @@ module.exports = {
         options: {
           limit: 10000
         }
+      },
+      { // Exclusions
+        exclude: [
+          path.join(__dirname, '/src/config.js')
+        ]
       }
     ]
   },
@@ -94,6 +101,6 @@ module.exports = {
     ] : [ // Production - generate public build
       HTMLWebpackPluginConfig,
       ExtractSassPluginConfig,
-      DefinePluginConfig
+      EnvironmentConfig
     ]
 }

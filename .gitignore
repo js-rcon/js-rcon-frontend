@@ -9,5 +9,5 @@ node_modules
 # Production build
 build
 
-# Configuration
+# Developer configuration
 src/config.js

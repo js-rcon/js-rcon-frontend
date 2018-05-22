@@ -3,6 +3,10 @@ import * as config from '../config'
 import { emitOne } from './dispatcher'
 import { decryptToken } from './encryption'
 
+// In development, use configured API URL - in production both run on localhost
+const url = `http://localhost:${window.location.port}`
+const apiUrl = process.env.NODE_ENV === 'development' ? config.apiUrl : url
+
 async function status () {
   let status = {
     loggedIn: false,
@@ -14,7 +18,7 @@ async function status () {
   const token = decryptToken(sessionStorage.getItem('token'))
 
   await SA
-    .get(`${config.api.url}/status`)
+    .get(`${apiUrl}/status`)
     .set({
       ContentType: 'application/json',
       Accept: 'application/json',
@@ -51,7 +55,7 @@ async function login (username, password) {
   }
 
   await SA
-    .post(`${config.api.url}/auth`)
+    .post(`${apiUrl}/auth`)
     .set({
       ContentType: 'application/json',
       Accept: 'application/json'

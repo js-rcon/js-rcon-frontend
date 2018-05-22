@@ -1,7 +1,7 @@
+// Developer configuration file
+
 const config = {}
 
-config.api = {
-  url: 'http://localhost:8080'
-}
+config.apiUrl = 'http://localhost:8080'
 
 module.exports = config
