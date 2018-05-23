@@ -4,8 +4,8 @@ import { emitOne } from './dispatcher'
 import { decryptToken } from './encryption'
 
 // In development, use configured API URL - in production both run on localhost
-const url = `http://localhost:${window.location.port}`
-const apiUrl = process.env.NODE_ENV === 'development' ? config.apiUrl : url
+const prodUrl = `http://localhost:${window.location.port}`
+const apiUrl = process.env && process.env.NODE_ENV === 'development' ? config.apiUrl : prodUrl
 
 async function status () {
   let status = {
