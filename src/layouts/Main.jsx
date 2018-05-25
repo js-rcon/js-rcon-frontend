@@ -6,7 +6,7 @@ import Dashboard from './Dashboard'
 
 import { status } from '../backend/api'
 import { dispatcher } from '../backend/dispatcher'
-import { writeToSessionStorage, removeFromSessionStorage } from '../backend/utils'
+import { encryptToken } from '../backend/encryption'
 
 import '../assets/scss/main.scss'
 
@@ -14,36 +14,38 @@ export default class Main extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      loggedIn: sessionStorage.getItem('loggedIn') || false,
-      username: sessionStorage.getItem('username') || null
+      loggedIn: false,
+      username: null
     }
     this.sessionStart = this.sessionStart.bind(this)
     this.sessionEnd = this.sessionEnd.bind(this)
   }
 
-  sessionStart (username) {
-    writeToSessionStorage(['loggedIn:true', `username:${username}`])
+  sessionStart (username, token) {
+    sessionStorage.setItem('token', encryptToken(token))
     this.setState({ loggedIn: true, username: username })
   }
 
   sessionEnd () {
-    removeFromSessionStorage(['loggedIn', 'username'])
+    sessionStorage.removeItem('token')
     this.setState({ loggedIn: false, username: null })
   }
 
   componentDidMount () {
-    status().then(authed => {
-      if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
-        if (!this.state.loggedIn && this.state.username !== authed.username) { // Anti-loop measures
-          this.sessionStart(authed.username)
+    if (sessionStorage.getItem('token')) { // Token exists from previous session
+      status().then(authed => {
+        if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
+          if (!this.state.loggedIn && this.state.username !== authed.username) { // Anti-loop measures
+            this.sessionStart(authed.username, authed.token)
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   render () {
-    dispatcher.once('LOGIN_SUCCESS', user => {
-      this.sessionStart(user)
+    dispatcher.once('LOGIN_SUCCESS', authDetails => {
+      this.sessionStart(authDetails.username, authDetails.token)
     })
 
     dispatcher.once('LOGOUT', () => {
@@ -61,7 +63,10 @@ export default class Main extends React.Component {
           component={Login}
         />
         {/* Dashboard */}
-        <Route path={'/dashboard'} component={Dashboard}/>
+        <Route
+          path={'/dashboard'}
+          render={(props) => <Dashboard inheritedState={this.state} token={sessionStorage.getItem('token')} />}
+        />
       </Switch>
     )
   }

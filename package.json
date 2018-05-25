@@ -1,16 +1,23 @@
 {
   "name": "js-rcon-frontend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server",
     "test": "eslint .",
     "build": "cross-env NODE_ENV=production webpack -p"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/js-rcon/js-rcon-frontend.git"
+  },
   "keywords": [],
   "author": "Linus Willner <hello@linuswillner.me> (https://linuswillner.me)",
   "license": "AGPLv3",
+  "bugs": {
+    "url": "https://github.com/js-rcon/js-rcon-frontend/issues"
+  },
+  "homepage": "https://github.com/js-rcon/js-rcon-frontend#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.2",
@@ -50,6 +57,8 @@
     "react-dom": "^16.3.0",
     "react-router-dom": "^4.2.2",
     "react-spinners": "^0.3.2",
+    "simple-crypto-js": "^1.1.1",
+    "socket.io-client": "^2.1.1",
     "superagent": "^3.8.2",
     "wolfy87-eventemitter": "^5.2.4"
   }

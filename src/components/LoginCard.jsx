@@ -4,6 +4,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import { PulseLoader } from 'react-spinners'
 import * as Colors from 'material-ui/styles/colors'
+
 import Spacer from './Spacer'
 import { login } from '../backend/api'
 import { dispatcher, emitOne } from '../backend/dispatcher'
@@ -63,7 +64,10 @@ export default class LoginCard extends React.Component {
       login(username, password).then(result => {
         if (result.loggedIn === true) {
           this.setState({ loggingIn: false })
-          emitOne('LOGIN_SUCCESS', result.username)
+          emitOne('LOGIN_SUCCESS', {
+            username: result.username,
+            token: result.token
+          })
         } else {
           this.setState({ loggingIn: false, failure: true })
         }
