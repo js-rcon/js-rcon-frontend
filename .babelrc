@@ -6,7 +6,8 @@
   "plugins": [
     [ "emotion", { "hoist": true } ],
     "react-hot-loader/babel",
-    "babel-plugin-transform-object-rest-spread",
+    "transform-object-rest-spread",
+    "transform-class-properties",
     [ "transform-runtime", { "polyfill": false, "regenerator": true } ]
   ]
 }

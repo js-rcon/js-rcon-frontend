@@ -43,6 +43,7 @@ async function status () {
         code: 'Ghost'
       })
     })
+
   return status
 }
 
@@ -87,7 +88,42 @@ async function login (username, password) {
         })
       }
     })
+
   return status
 }
 
-export { status, login }
+async function logout (username) {
+  let status = {
+    loggedOut: false,
+    error: null
+  }
+
+  const token = decryptToken(sessionStorage.getItem('token'))
+
+  await SA
+    .post(`${apiUrl}/logout`)
+    .set({
+      ContentType: 'application/json',
+      Accept: 'application/json'
+    })
+    .send({
+      username: username,
+      token: token
+    })
+    .then(res => {
+      if (res.status === 200 && res.body.loggedOut) status.loggedOut = true
+    })
+    .catch(err => {
+      status.error = err
+
+      emitOne('REQUEST_ERROR_OVERLAY', {
+        error: err,
+        msg: err.message,
+        code: 'Ghost'
+      })
+    })
+
+  return status
+}
+
+export { status, login, logout }

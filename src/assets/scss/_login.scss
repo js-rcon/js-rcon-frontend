@@ -13,6 +13,7 @@
 }
 
 // Logo shown above the form
+// FIXME: On low screen heights this breaks spectacularly
 .login-logo {
   position: absolute;
   max-width: 100px;

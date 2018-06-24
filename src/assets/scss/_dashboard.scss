@@ -1,0 +1,73 @@
+body {
+  overflow-x: hidden; // Prevent redundant scrollbar from appearing
+}
+
+.top-bar {
+  background-color: #FF9800 !important; // Material: deepOrange900
+}
+
+.top-bar-icon {
+  color: #FFFFFF !important;
+}
+
+// Debug text in light theme (Does not change automatically)
+.debug-text-light {
+  color: #000000;
+}
+
+// Debug text in dark theme (Does not change automatically)
+.debug-text-dark {
+  color: #FFFFFF;
+}
+
+.debug {
+  code {
+    color: gray;
+    word-wrap: break-word;
+  }
+
+  // Vertically aligns icon with text
+  .metric-icon {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 3px;
+    padding-right: 5px;
+  }
+}
+
+.dashboard-tile {
+  padding: 20px;
+  min-height: 180px;
+  max-width: 360px;
+}
+
+.tool {
+  .title-container {
+    padding-bottom: 5px; 
+  }
+
+  .button-container {
+    padding-top: 10px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 23px;
+  }
+
+  // Vertically aligns icon with text 
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 7px;
+    padding-right: 5px;
+    font-size: 30px;
+  }
+}
+
+.response-viewer {
+  .response {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+}

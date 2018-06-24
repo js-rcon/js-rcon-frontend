@@ -1,14 +1,11 @@
 import React from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
 
-import Login from './Login'
-import Dashboard from './Dashboard'
+import Routes from './Routes'
 
 import { status } from '../backend/api'
 import { dispatcher } from '../backend/dispatcher'
 import { encryptToken } from '../backend/encryption'
-
-import '../assets/scss/main.scss'
 
 export default class Main extends React.Component {
   constructor (props) {
@@ -17,6 +14,7 @@ export default class Main extends React.Component {
       loggedIn: false,
       username: null
     }
+
     this.sessionStart = this.sessionStart.bind(this)
     this.sessionEnd = this.sessionEnd.bind(this)
   }
@@ -32,6 +30,14 @@ export default class Main extends React.Component {
   }
 
   componentDidMount () {
+    dispatcher.on('LOGIN_SUCCESS', authDetails => {
+      this.sessionStart(authDetails.username, authDetails.token)
+    })
+
+    dispatcher.on('LOGOUT', () => {
+      this.sessionEnd()
+    })
+
     if (sessionStorage.getItem('token')) { // Token exists from previous session
       status().then(authed => {
         if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
@@ -44,30 +50,17 @@ export default class Main extends React.Component {
   }
 
   render () {
-    dispatcher.once('LOGIN_SUCCESS', authDetails => {
-      this.sessionStart(authDetails.username, authDetails.token)
-    })
-
-    dispatcher.once('LOGOUT', () => {
-      this.sessionEnd()
-    })
-
-    if (this.state.loggedIn && window.location.pathname !== '/dashboard') return <Redirect to={'/dashboard'}/>
+    // Cannot use location.pathname because of the hash, substringing from location.hash instead
+    if (this.state.loggedIn && window.location.hash.substring(1) !== '/dashboard') {
+      window.onkeypress = null // Unregister LoginCard enter event handler
+      return <Redirect to={'/dashboard'}/>
+    }
 
     return (
-      <Switch>
-        {/* Login (Root) */}
-        <Route
-          exact
-          path={'/'}
-          component={Login}
-        />
-        {/* Dashboard */}
-        <Route
-          path={'/dashboard'}
-          render={(props) => <Dashboard inheritedState={this.state} token={sessionStorage.getItem('token')} />}
-        />
-      </Switch>
+      <Routes
+        loggedIn={this.state.loggedIn}
+        inheritedState={this.state}
+      />
     )
   }
 }
