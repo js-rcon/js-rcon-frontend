@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import Routes from './Routes'
 
 import { status } from '../backend/api'
-import { dispatcher } from '../backend/dispatcher'
+import { dispatcher, emitOne } from '../backend/dispatcher'
 import { encryptToken } from '../backend/encryption'
 
 export default class Main extends React.Component {
@@ -40,13 +40,13 @@ export default class Main extends React.Component {
 
     if (sessionStorage.getItem('token')) { // Token exists from previous session
       status().then(authed => {
-        if (authed.loggedIn && !authed.error) { // For readability, check prerequisites here
-          if (!this.state.loggedIn && this.state.username !== authed.username) { // Anti-loop measures
-            this.sessionStart(authed.username, authed.token)
-          }
-        }
+        const authOK = authed.loggedIn && !authed.error // Auth prereqs
+        const stateOK = !this.state.loggedIn && this.state.username !== authed.username // Anti-loop
+
+        if (authOK && stateOK) this.sessionStart(authed.username, authed.token)
+        else emitOne('DISPLAY_LOGIN') // Implements invisibility during intermediary state
       })
-    }
+    } else emitOne('DISPLAY_LOGIN') // Implements invisibility during intermediary state
   }
 
   render () {

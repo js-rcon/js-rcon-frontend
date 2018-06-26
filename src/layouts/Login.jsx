@@ -3,29 +3,29 @@ import React from 'react'
 import LoginCard from '../components/LoginCard'
 import ErrorOverlay from '../components/ErrorOverlay'
 
-// TODO: Get a method to disable viewing of the intermediary state on refresh when a login is still valid
+import { dispatcher } from '../backend/dispatcher'
+
 export default class Login extends React.Component {
-  styles = {
-    imageOverrides: {
-      // Disable image on low width devices for better UX
-      display: window.innerWidth < 650 ? 'none' : 'initial'
-    }
+  constructor (props) {
+    super(props)
+    this.state = { visible: false }
+  }
+
+  componentDidMount () {
+    dispatcher.on('DISPLAY_LOGIN', () => this.setState({ visible: true }))
   }
 
   render () {
     return (
-      <div>
+      <div className={`login-container ${this.state.visible ? 'visible' : 'invisible'}`}>
         {/* Mount hidden components */}
         <ErrorOverlay/>
         {/* Main interface */}
         <img
           className={'login-logo'}
-          style={this.styles.imageOverrides}
           src={require('../assets/images/logo.png')}
         />
-        <div className={'login-container'}>
-          <LoginCard/>
-        </div>
+        <LoginCard/>
       </div>
     )
   }

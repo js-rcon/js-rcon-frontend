@@ -1,9 +1,24 @@
+%login-transition {
+  @include transition(all 500ms);
+}
+
 // Container that centers the div hosting the form
 .login-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+// Visibility
+.visible {
+  opacity: 1;
+  @extend %login-transition;
+}
+
+.invisible {
+  opacity: 0;
+  @extend %login-transition;
 }
 
 // Form content
@@ -13,12 +28,10 @@
 }
 
 // Logo shown above the form
-// FIXME: On low screen heights this breaks spectacularly
 .login-logo {
-  position: absolute;
-  max-width: 100px;
-  height: auto;
-  top: 25%;
+  position: relative;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -15%);
+  width: 100px;
+  height: auto;
 }
