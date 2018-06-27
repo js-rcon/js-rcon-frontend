@@ -19,9 +19,7 @@ export default class NavbarMenu extends React.Component {
         <MenuItem
           primaryText={'Settings'}
           rightIcon={<i className={'material-icons'}>settings</i>}
-          onClick={() => {
-            emitOne('OPEN_SETTINGS')
-          }}
+          onClick={() => emitOne('OPEN_SETTINGS')}
         />
         {/* Debug (If in dev mode) */}
         {

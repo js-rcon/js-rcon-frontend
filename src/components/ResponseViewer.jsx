@@ -23,7 +23,7 @@ export default class ResponseViewer extends React.Component {
   }
 
   parseResponse (response) {
-    if (!response) return '<div></div>'
+    if (!response) return ''
 
     // Convert newlines to breaks
     response = response.replaceAll('\n', '<br>')
@@ -39,9 +39,7 @@ export default class ResponseViewer extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('OPEN_RESPONSE_VIEWER', responseText => {
-      this.open(responseText)
-    })
+    dispatcher.on('OPEN_RESPONSE_VIEWER', responseText => this.open(responseText))
   }
 
   render () {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 
 // Tools
-import Eval from '../components/tools/Eval'
+import Eval from 'tools/Eval'
 
 class Row extends React.Component {
   render () {

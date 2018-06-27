@@ -82,9 +82,12 @@ module.exports = {
       }
     ]
   },
-  // Extension config
+  // Extension and folder alias config
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      tools: path.resolve(__dirname, 'src/components/tools')
+    }
   },
   // Production build
   output: {

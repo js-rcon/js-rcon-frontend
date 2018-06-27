@@ -41,9 +41,7 @@ export default class DebugOverlay extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('OPEN_DEBUG', () => {
-      this.open()
-    })
+    dispatcher.on('OPEN_DEBUG', () => this.open())
   }
 
   render () {

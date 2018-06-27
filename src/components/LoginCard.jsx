@@ -7,7 +7,7 @@ import * as colors from 'material-ui/styles/colors'
 
 import Spacer from './Spacer'
 import { login } from '../backend/api'
-import { dispatcher, emitOne } from '../backend/dispatcher'
+import { emitOne } from '../backend/dispatcher'
 
 export default class LoginCard extends React.Component {
   constructor (props) {

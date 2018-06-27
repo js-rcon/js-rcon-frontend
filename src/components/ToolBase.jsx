@@ -6,7 +6,7 @@ import { PulseLoader } from 'react-spinners'
 import * as colors from 'material-ui/styles/colors'
 import * as randstr from 'randstr'
 
-import { dispatcher, emitOne } from '../../backend/dispatcher'
+import { dispatcher, emitOne } from '../backend/dispatcher'
 
 class Icon extends React.Component {
   render () {
@@ -104,16 +104,18 @@ export default class Tool extends React.Component {
       const malformed = []
       fields.map(f => { if (!f.value) malformed.push(f.field) })
 
-      if (malformed.length > 0) this.setState({ noInput: true, erroredFields: malformed })
+      if (malformed.length > 0) this.setState({ noInput: true, erroredFields: malformed, sending: false })
+      else {
+        // Only submit if all fields passed inspection, otherwise wait for user to rectify
+        // Data is joined into a string because two arrays cannot be compared
+        if (fields.map(f => f.field).join(' ') === this.state.fields.join(' ')) {
+          // Format into { fieldId: value } format
+          const fieldValues = {}
+          fields.map(f => { fieldValues[f.field] = f.value }) // Curlies because of no-return-assign
 
-      // Only submit if all fields passed inspection, otherwise wait for user to rectify
-      // Data is joined into a string because two arrays cannot be compared
-      if (fields.map(f => f.field).join(' ') === this.state.fields.join(' ')) {
-        // Format into { fieldId: value } format
-        const fieldValues = {}
-        fields.map(f => { fieldValues[f.field] = f.value }) // Curlies because of no-return-assign
-        this.sendSocketMessage(fieldValues)
-        this.setState({ sending: false })
+          this.sendSocketMessage(fieldValues)
+          this.setState({ sending: false })
+        }
       }
     })
   }
@@ -129,7 +131,7 @@ export default class Tool extends React.Component {
           emitOne('OPEN_RESPONSE_VIEWER', response)
           break
         case 'toast':
-          emitOne('DISPLAY_RESPONSE_TOAST', response) // TODO: Make toast component
+          emitOne('DISPLAY_RESPONSE_TOAST', response)
           break
         default:
           console.warn(`Unknown response viewer type: ${this.props.viewerType}`)

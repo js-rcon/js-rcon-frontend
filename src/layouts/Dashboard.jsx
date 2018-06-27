@@ -10,6 +10,7 @@ import SettingsOverlay from '../components/SettingsOverlay'
 import ErrorOverlay from '../components/ErrorOverlay'
 import DebugOverlay from '../components/DebugOverlay'
 import ResponseViewer from '../components/ResponseViewer'
+import ResponseToast from '../components/ResponseToast'
 import Spacer from '../components/Spacer'
 
 import * as config from '../config'
@@ -129,6 +130,7 @@ export default class Dashboard extends React.Component {
         }
         <SettingsOverlay/>
         <ResponseViewer/>
+        <ResponseToast/>
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>
