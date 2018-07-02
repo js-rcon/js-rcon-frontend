@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper'
 
 // Tools
 import Eval from 'tools/Eval'
+import MapChange from 'tools/MapChange'
 
 class Row extends React.Component {
   render () {
@@ -24,7 +25,7 @@ class Tile extends React.Component {
             className={'dashboard-tile'}
             zDepth={1}
           >
-            {this.props.children}
+            {this.props.component}
           </Paper>
         </div>
       </div>
@@ -32,25 +33,24 @@ class Tile extends React.Component {
   }
 }
 
-// TODO: Tile colours do not stay dark if DT is enabled and the page is refreshed
 export default class Tiles extends React.Component {
   render () {
     // Use 5 tiles per row
     return (
       <div>
         <Row>
-          <Tile><Eval/></Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
+          <Tile component={<Eval/>}/>
+          <Tile component={<MapChange/>}/>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
         </Row>
         <Row>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
-          <Tile>Test</Tile>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
+          <Tile component={'test'}/>
         </Row>
       </div>
     )
@@ -62,5 +62,5 @@ Row.propTypes = {
 }
 
 Tile.propTypes = {
-  children: PropTypes.node.isRequired
+  component: PropTypes.node.isRequired
 }

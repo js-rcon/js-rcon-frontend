@@ -27,7 +27,7 @@ import Tool from '../ToolBase'
 export default class MyTool extends React.Component {
   fields = [
     'Command', // Defines hint text
-    'ID' // Add more as needed
+    'ID' // Add more as needed - note: Field names must be unique
     // NOTE: If field is not added as a socket payload value, the value will not get sent to the server - see below for more
   ]
 
@@ -41,6 +41,13 @@ export default class MyTool extends React.Component {
     { property: 'c', value: '#rcon-command' }
   ]
 
+  autoCompleteData = [
+    // Auto complete data for inputs in the tool
+    // 'field' is a field ID as above, 'data' is an array of possible values
+    { field: 'rcon-command', data: ['sm_listplayers', 'meta list'] },
+    { field: 'id', data: [] } // You may submit an empty array, but this is redundant
+  ]
+
   render () {
     return (
       <Tool
@@ -49,6 +56,7 @@ export default class MyTool extends React.Component {
         fields={this.fields} // Do not modify
         socketPayload={this.socketPayload} // Do not modify
         viewerType={'overlay'} // 'overlay' or 'toast' - if the response is long, use former as it opens a toast - otherwise use toast
+        autoComplete={['sm_listplayers', 'sm_ban']} // Optional - possible values to input in the text
       />
     )
   }
@@ -72,6 +80,11 @@ export default class MyTool extends React.Component {
     { property: 'c', value: '#rcon-command' }
   ]
 
+  autoCompletes = [
+    { field: 'rcon-command', data: ['sm_listplayers', 'meta list'] },
+    { field: 'id', data: [] }
+  ]
+
   render () {
     return (
       <Tool
@@ -80,8 +93,45 @@ export default class MyTool extends React.Component {
         fields={this.fields}
         socketPayload={this.socketPayload}
         viewerType={'overlay'}
+        autoCompletes={this.autoCompletes}
       />
     )
   }
 }
 ```
+
+## State and autocomplete
+
+When using state with autocompletes, there are some extra considerations involved.
+
+If you wish to use a state value in an autocomplete, you need to define an autocomplete object as `{ field: 'command', data: '%autoCompleteData' }` and add a **processAutoCompletes** function to the component as follows.
+
+**Commented example**
+```js
+processAutoCompletes () {
+  this.autoCompletes.map(o => {
+    // Check if field value is still a template
+    if (typeof o.data === 'string') {
+      // Check that value has template sign and isn't already set
+      if (o.data.startsWith('%') && o.data !== this.state[o.data.substring(1)]) o.data = this.state[o.data.substring(1)]
+    }
+  })
+
+  return this.autoCompletes
+}
+```
+
+**Uncommented example**
+```js
+processAutoCompletes () {
+  this.autoCompletes.map(o => {
+    if (typeof o.data === 'string') {
+      if (o.data.startsWith('%') && o.data !== this.state[o.data.substring(1)]) o.data = this.state[o.data.substring(1)]
+    }
+  })
+
+  return this.autoCompletes
+}
+```
+
+The **%** sign informs the processor that the value is supposed to be replaced with a state value. Note that the state value being accessed needs to be defined in the constructor, or errors will ensue.

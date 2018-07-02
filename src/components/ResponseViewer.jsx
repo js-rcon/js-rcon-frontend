@@ -39,7 +39,7 @@ export default class ResponseViewer extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('OPEN_RESPONSE_VIEWER', responseText => this.open(responseText))
+    dispatcher.on('OPEN_RESPONSE_VIEWER', response => this.open(response.c))
   }
 
   render () {

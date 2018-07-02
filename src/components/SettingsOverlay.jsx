@@ -63,7 +63,6 @@ export default class SettingsOverlay extends React.Component {
   saveSettings () {
     localStorage.setItem('settings', JSON.stringify(this.state.settings))
     window.settings = this.state.settings
-    console.log(window.settings)
     this.setState({ oldSettings: null })
     this.close()
   }

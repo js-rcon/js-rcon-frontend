@@ -11,6 +11,12 @@ export default class ResponseToast extends React.Component {
   }
 
   open (responseText) {
+    if (responseText === 'true' || responseText === 'false') {
+      // Show success message instead of non-descript 'true' or 'false'
+      responseText = JSON.parse(responseText)
+
+      responseText ? responseText = 'Success!' : responseText = 'Failure!'
+    }
     this.setState({ open: true, data: responseText })
   }
 
@@ -21,7 +27,7 @@ export default class ResponseToast extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('DISPLAY_RESPONSE_TOAST', responseText => this.open(responseText))
+    dispatcher.on('DISPLAY_RESPONSE_TOAST', response => this.open(response.c))
   }
 
   render () {

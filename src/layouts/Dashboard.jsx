@@ -16,6 +16,7 @@ import Spacer from '../components/Spacer'
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
+import { socketBootup, storeMaps } from '../backend/socketTools'
 
 /*
   TODO: Different views:
@@ -40,13 +41,18 @@ export default class Dashboard extends React.Component {
     }
 
     this.socket = null
-    this.connectSocket = this.connectSocket.bind(this)
+    this.socketHandlers = this.socketHandlers.bind(this)
   }
 
   devMode = process.env && process.env.NODE_ENV === 'development'
 
   // In production, the servers run on the same address
   wssUrl = this.devMode ? config.apiUrl : `http://localhost:${window.location.port}`
+
+  notLoggedMessages = [
+    'HEARTBEAT_RESPONSE',
+    'LISTMAPS_RESPONSE'
+  ]
 
   componentDidMount () {
     dispatcher.on('LOGOUT_SIGNAL', () => {
@@ -57,6 +63,10 @@ export default class Dashboard extends React.Component {
       this.setState({ autoProtectEnabled: enabled })
     })
 
+    this.socketHandlers()
+  }
+
+  socketHandlers () {
     this.socket = io.connect(this.wssUrl)
     window.socket = this.socket
 
@@ -68,6 +78,7 @@ export default class Dashboard extends React.Component {
     this.socket.on('connect', () => {
       this.socket.on('authenticated', () => {
         this.setState({ socketConnected: true })
+        socketBootup()
       })
 
       this.socket.on('unauthorized', err => {
@@ -75,9 +86,9 @@ export default class Dashboard extends React.Component {
       })
     })
 
-    this.socket.on('disconnect', reason => {
+    this.socket.on('disconnect', () => {
       this.setState({ socketConnected: false })
-      this.connectSocket()
+      this.socketHandlers()
     })
 
     this.socket.on('message', msg => {
@@ -88,18 +99,26 @@ export default class Dashboard extends React.Component {
       }
 
       // Log messages for debugging
-      if (this.devMode && message.op !== 'HEARTBEAT_RESPONSE') console.log('Received WS message: ' + msg)
+      if (this.devMode && !this.notLoggedMessages.includes(message.op)) console.log('Received WS message: ' + msg)
 
-      // Report that the socket is receiving heartbeats / emit received response ack
-      if (message.op === 'HEARTBEAT_RESPONSE') this.setState({ receivingHeartbeat: true })
-      else emitOne('RECEIVED_SERVER_RESPONSE', message.c)
+      // Response handlers
+      switch (message.op) {
+        case 'HEARTBEAT_RESPONSE':
+          // TODO: Player data is received here
+          this.setState({ receivingHeartbeat: true })
+          break
+        case 'LISTMAPS_RESPONSE':
+          storeMaps(message.c)
+          break
+        default:
+          emitOne('RECEIVED_SERVER_RESPONSE', {
+            op: message.op,
+            c: message.c,
+            id: message.id
+          })
+          break
+      }
     })
-  }
-
-  connectSocket () {
-    this.socket = io.connect(this.wssUrl)
-    window.socket = this.socket
-    this.setState({ socketConnected: true })
   }
 
   componentWillUnmount () {

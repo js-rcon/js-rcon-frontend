@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import TextField from 'material-ui/TextField'
+import AutoComplete from 'material-ui/AutoComplete'
 import RaisedButton from 'material-ui/RaisedButton'
 import { PulseLoader } from 'react-spinners'
 import * as colors from 'material-ui/styles/colors'
@@ -23,10 +23,13 @@ export default class Tool extends React.Component {
       fields: [],
       erroredFields: [], // Implements field-specific errors despite single-component structure
       noInput: false,
-      sending: false
+      sending: false,
+      lastSent: null, // Implements tracking to avoid unnecessary code execution
+      darkThemeEnabled: window.settings.darkThemeEnabled || false
     }
 
     this.generateInputs = this.generateInputs.bind(this)
+    this.getAutoCompleteData = this.getAutoCompleteData.bind(this)
     this.sendSocketMessage = this.sendSocketMessage.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
@@ -34,7 +37,8 @@ export default class Tool extends React.Component {
 
   styles = {
     input: { borderColor: colors.orange500 },
-    error: { borderColor: colors.red500 }
+    error: { borderColor: colors.red500 },
+    hintText: { color: '#A0A0A0' }
   }
 
   generateInputs (fieldArray) {
@@ -46,12 +50,16 @@ export default class Tool extends React.Component {
       if (!fieldIdList.includes(fieldId)) fieldIdList.push(fieldId)
 
       return (
-        <TextField
+        <AutoComplete
           hintText={field}
+          hintStyle={this.state.darkThemeEnabled ? this.styles.hintText : {}}
           id={fieldId}
           key={fieldId}
           multiLine={true}
           rowsMax={2}
+          dataSource={this.props.autoCompletes ? this.getAutoCompleteData(fieldId) : []}
+          filter={AutoComplete.fuzzyFilter}
+          maxSearchResults={5}
           underlineFocusStyle={this.state.noInput && this.state.erroredFields.includes(fieldId) ? this.styles.error : this.styles.input}
           errorText={(this.state.noInput && this.state.erroredFields.includes(fieldId) && 'Please enter a value.')}
           onChange={this.handleChange}
@@ -66,7 +74,16 @@ export default class Tool extends React.Component {
     return fields
   }
 
-  sendSocketMessage (fieldValues) {
+  getAutoCompleteData (fieldId) {
+    // Get the first item - if there are several, the issue will be PEBKAC anyways
+    const dataSource = this.props.autoCompletes.filter(a => a.field === fieldId)[0]
+
+    // Not using implicit return because the 'data' property is accessed and thus an existence check is needed
+    if (!dataSource) return []
+    else return dataSource.data
+  }
+
+  sendSocketMessage (fieldValues, requestId) {
     const payload = {}
 
     this.props.socketPayload.map(obj => {
@@ -75,11 +92,8 @@ export default class Tool extends React.Component {
       else payload[obj.property] = obj.value
     })
 
-    // Assign unique request ID for tracking
-    const requestId = randstr(16)
     payload.id = requestId
 
-    // Send message
     window.socket.send(JSON.stringify(payload))
   }
 
@@ -113,8 +127,11 @@ export default class Tool extends React.Component {
           const fieldValues = {}
           fields.map(f => { fieldValues[f.field] = f.value }) // Curlies because of no-return-assign
 
-          this.sendSocketMessage(fieldValues)
-          this.setState({ sending: false })
+          // Assign ID for tracking (randomid:viewertype)
+          const requestId = `${randstr(16)}:${this.props.viewerType}`
+
+          this.setState({ lastSent: requestId })
+          this.sendSocketMessage(fieldValues, requestId)
         }
       }
     })
@@ -122,20 +139,24 @@ export default class Tool extends React.Component {
 
   componentDidMount () {
     dispatcher.on('RECEIVED_SERVER_RESPONSE', response => {
-      // Stringify if not already a string
-      if (typeof response !== 'string') response = JSON.stringify(response)
+      this.setState({ sending: false }, () => {
+        if (this.state.lastSent !== response.id) { // Avoids unnecessary code execution
+          // Stringify content if not a string already
+          if (typeof response.c !== 'string') response.c = JSON.stringify(response.c)
 
-      // Determine what viewer to open
-      switch (this.props.viewerType) {
-        case 'overlay':
-          emitOne('OPEN_RESPONSE_VIEWER', response)
-          break
-        case 'toast':
-          emitOne('DISPLAY_RESPONSE_TOAST', response)
-          break
-        default:
-          console.warn(`Unknown response viewer type: ${this.props.viewerType}`)
-      }
+          // Determine what viewer to open
+          switch (response.id.split(':')[1]) {
+            case 'overlay':
+              emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
+              break
+            case 'toast':
+              emitOne('DISPLAY_RESPONSE_TOAST', { c: response.c, id: response.id })
+              break
+            default:
+              console.warn(`Unknown response viewer type: ${this.props.viewerType}`)
+          }
+        }
+      })
     })
   }
 
@@ -171,5 +192,6 @@ Tool.propTypes = {
   title: PropTypes.string.isRequired,
   fields: PropTypes.array.isRequired,
   socketPayload: PropTypes.array.isRequired,
-  viewerType: PropTypes.string.isRequired
+  viewerType: PropTypes.string.isRequired,
+  autoCompletes: PropTypes.array
 }

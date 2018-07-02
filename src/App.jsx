@@ -15,7 +15,7 @@ import { dispatcher } from './backend/dispatcher'
 // Load settings from localStorage before application init
 // Using JSON.parse because localStorage.getItem returns a string
 if (!JSON.parse(localStorage.getItem('settings'))) localStorage.setItem('settings', JSON.stringify({}))
-window.settings = localStorage.getItem('settings')
+window.settings = JSON.parse(localStorage.getItem('settings'))
 
 export default class App extends React.Component {
   constructor (props) {
