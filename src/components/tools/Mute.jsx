@@ -4,27 +4,27 @@ import Tool from '../ToolBase'
 
 import { dispatcher } from '../../backend/dispatcher'
 
-export default class MapChange extends React.Component {
+export default class Mute extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      // If maps are already written to storage, make them available for autocomplete
-      autoCompleteData: sessionStorage.getItem('maps') ? JSON.parse(sessionStorage.getItem('maps')) : []
+      // If players are already written to storage, make them available for autocomplete
+      autoCompleteData: sessionStorage.getItem('players') ? JSON.parse(sessionStorage.getItem('players')) : []
     }
     this.processAutoCompletes = this.processAutoCompletes.bind(this)
   }
 
   fields = [
-    'Map name'
+    'Player name'
   ]
 
   socketPayload = [
-    { property: 'op', value: 'MAPCHANGE' },
-    { property: 'c', value: '#map-name' }
+    { property: 'op', value: 'MUTE' },
+    { property: 'user', value: '#player-name' }
   ]
 
   autoCompletes = [
-    { field: 'map-name', data: '%autoCompleteData' }
+    { field: 'player-name', data: '%autoCompleteData' }
   ]
 
   processAutoCompletes () {
@@ -38,10 +38,10 @@ export default class MapChange extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('RECEIVED_MAPS', () => {
-      if (JSON.stringify(this.state.autoCompleteData) !== sessionStorage.getItem('maps')) {
+    dispatcher.on('RECEIVED_PLAYERS', () => {
+      if (JSON.stringify(this.state.autoCompleteData) !== sessionStorage.getItem('players')) {
         // Only update if data has been modified
-        this.setState({ autoCompleteData: JSON.parse(sessionStorage.getItem('maps')) })
+        this.setState({ autoCompleteData: JSON.parse(sessionStorage.getItem('players')) })
       }
     })
   }
@@ -49,8 +49,8 @@ export default class MapChange extends React.Component {
   render () {
     return (
       <Tool
-        title={'Change map'}
-        icon={'map'}
+        title={'Mute player'}
+        icon={'voice_over_off'}
         fields={this.fields}
         socketPayload={this.socketPayload}
         viewerType={'toast'}

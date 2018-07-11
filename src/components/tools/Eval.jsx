@@ -16,7 +16,7 @@ export default class Eval extends React.Component {
     return (
       <Tool
         title={'Send RCON Command'}
-        icon={'cast'}
+        icon={'code'}
         fields={this.fields}
         socketPayload={this.socketPayload}
         viewerType={'overlay'}

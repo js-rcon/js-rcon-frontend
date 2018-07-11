@@ -11,12 +11,13 @@ import ErrorOverlay from '../components/ErrorOverlay'
 import DebugOverlay from '../components/DebugOverlay'
 import ResponseViewer from '../components/ResponseViewer'
 import ResponseToast from '../components/ResponseToast'
+import Notification from '../components/Notification'
 import Spacer from '../components/Spacer'
 
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
-import { socketBootup, storeMaps } from '../backend/socketTools'
+import { socketBootup, storeMaps, storePlayers } from '../backend/socketTools'
 
 /*
   TODO: Different views:
@@ -88,15 +89,13 @@ export default class Dashboard extends React.Component {
 
     this.socket.on('disconnect', () => {
       this.setState({ socketConnected: false })
+      this.socket = null
+      window.socket = null
       this.socketHandlers()
     })
 
     this.socket.on('message', msg => {
       const message = JSON.parse(msg)
-
-      if (this.state.autoProtectEnabled) {
-        // TODO: Kick private profiles or users that are less than a week old
-      }
 
       // Log messages for debugging
       if (this.devMode && !this.notLoggedMessages.includes(message.op)) console.log('Received WS message: ' + msg)
@@ -104,11 +103,29 @@ export default class Dashboard extends React.Component {
       // Response handlers
       switch (message.op) {
         case 'HEARTBEAT_RESPONSE':
-          // TODO: Player data is received here
-          this.setState({ receivingHeartbeat: true })
+          storePlayers(message.c)
+
+          if (!this.state.receivingHeartbeat) this.setState({ receivingHeartbeat: true })
+
+          // Automatically kick new and private users if automatic protection is enabled
+          if (this.state.autoProtectEnabled && message.c.length > 0) {
+            message.c.map(user => {
+              if (user.young || user.private) {
+                this.socket.send(JSON.stringify({
+                  op: 'AUTOKICK',
+                  user: user.Nick,
+                  reason: 'Kicked by JS-RCON auto-protection',
+                  id: 'autokick'
+                }))
+              }
+            })
+          }
           break
         case 'LISTMAPS_RESPONSE':
           storeMaps(message.c)
+          break
+        case 'AUTOKICK_RESPONSE':
+          emitOne('DISPLAY_NOTIFICATION', message.c)
           break
         default:
           emitOne('RECEIVED_SERVER_RESPONSE', {
@@ -122,6 +139,8 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillUnmount () {
+    sessionStorage.removeItem('maps')
+    sessionStorage.removeItem('players')
     this.socket.close()
   }
 
@@ -150,6 +169,7 @@ export default class Dashboard extends React.Component {
         <SettingsOverlay/>
         <ResponseViewer/>
         <ResponseToast/>
+        <Notification/>
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>

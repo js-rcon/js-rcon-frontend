@@ -23,6 +23,7 @@ export default class Tool extends React.Component {
       fields: [],
       erroredFields: [], // Implements field-specific errors despite single-component structure
       noInput: false,
+      invalidInput: false,
       sending: false,
       lastSent: null, // Implements tracking to avoid unnecessary code execution
       darkThemeEnabled: window.settings.darkThemeEnabled || false
@@ -45,7 +46,7 @@ export default class Tool extends React.Component {
     const fieldIdList = [] // Used to track fields for later submission
 
     const fields = fieldArray.map(field => {
-      const fieldId = field.toLowerCase().replaceAll(' ', '-')
+      const fieldId = `${this.props.title.toLowerCase().replaceAll(' ', '-')}:${field.toLowerCase().replaceAll(' ', '-')}`
 
       if (!fieldIdList.includes(fieldId)) fieldIdList.push(fieldId)
 
@@ -61,7 +62,10 @@ export default class Tool extends React.Component {
           filter={AutoComplete.fuzzyFilter}
           maxSearchResults={5}
           underlineFocusStyle={this.state.noInput && this.state.erroredFields.includes(fieldId) ? this.styles.error : this.styles.input}
-          errorText={(this.state.noInput && this.state.erroredFields.includes(fieldId) && 'Please enter a value.')}
+          errorText={
+            (this.state.noInput && this.state.erroredFields.includes(fieldId) && 'Please enter a value.') ||
+            (this.state.invalidInput && this.state.erroredFields.includes(fieldId) && 'No entity found with that name.')
+          }
           onChange={this.handleChange}
         />
       )
@@ -75,7 +79,9 @@ export default class Tool extends React.Component {
   }
 
   getAutoCompleteData (fieldId) {
-    // Get the first item - if there are several, the issue will be PEBKAC anyways
+    fieldId = fieldId.split(':')[1] // Truncate unique part away
+
+    // Truncate auto complete data - if there are several fields with the same ID, the issue will be PEBKAC anyways
     const dataSource = this.props.autoCompletes.filter(a => a.field === fieldId)[0]
 
     // Not using implicit return because the 'data' property is accessed and thus an existence check is needed
@@ -86,8 +92,9 @@ export default class Tool extends React.Component {
   sendSocketMessage (fieldValues, requestId) {
     const payload = {}
 
+    // Detect socket payload values that require inputs
     this.props.socketPayload.map(obj => {
-      // # signifies field ID
+      // # signifies field ID (See tools.md)
       if (obj.value.startsWith('#')) payload[obj.property] = fieldValues[obj.value.substring(1)]
       else payload[obj.property] = obj.value
     })
@@ -109,7 +116,7 @@ export default class Tool extends React.Component {
     this.setState({ noInput: false, erroredFields: [], sending: true }, () => {
       const fields = document.getElementsById(this.state.fields).map(f => {
         return {
-          field: f.id,
+          field: f.id.split(':')[1], // Truncate unique part away
           value: f.value
         }
       })
@@ -120,12 +127,36 @@ export default class Tool extends React.Component {
 
       if (malformed.length > 0) this.setState({ noInput: true, erroredFields: malformed, sending: false })
       else {
-        // Only submit if all fields passed inspection, otherwise wait for user to rectify
-        // Data is joined into a string because two arrays cannot be compared
-        if (fields.map(f => f.field).join(' ') === this.state.fields.join(' ')) {
-          // Format into { fieldId: value } format
+        // Join data into strings to compare them (Arrays cannot be directly compared)
+        // Also formats inputted IDs into the unique format used elsewhere (See L49)
+        const fieldsAreIntact = fields.map(f => `${this.props.title.toLowerCase().replaceAll(' ', '-')}:${f.field}`).join(' ') === this.state.fields.join(' ')
+
+        if (fieldsAreIntact) {
+          const fieldsInTool = fields.map(f => f.field)
+          const fieldsWithAC = this.props.autoCompletes.map(a => a.field)
+
           const fieldValues = {}
-          fields.map(f => { fieldValues[f.field] = f.value }) // Curlies because of no-return-assign
+          const ACValues = {}
+
+          fields.map(f => { fieldValues[f.field] = f.value }) // Format into { fieldId: value }
+          this.props.autoCompletes.map(a => { ACValues[a.field] = a.data }) // Format into { fieldId: autoCompleteData }
+
+          // Check autocomplete validity if enabled (Avoids sending of invalid data to server)
+          if (this.props.autoCompletes) {
+            const invalidFields = []
+
+            fieldsInTool.forEach(field => {
+              // If the input wasn't found in the autocomplete data, add to invalid field list
+              if (fieldsWithAC.includes(field) && !ACValues[field].includes(fieldValues[field])) {
+                invalidFields.push(`${this.props.title.toLowerCase().replaceAll(' ', '-')}:${field}`) // Unify formatting, see L49
+              }
+            })
+
+            if (invalidFields.length > 0) {
+              this.setState({ invalidInput: true, erroredFields: invalidFields, sending: false })
+              return // Using return to terminate the function, as it would otherwise proceed with the request
+            }
+          }
 
           // Assign ID for tracking (randomid:viewertype)
           const requestId = `${randstr(16)}:${this.props.viewerType}`
@@ -140,9 +171,12 @@ export default class Tool extends React.Component {
   componentDidMount () {
     dispatcher.on('RECEIVED_SERVER_RESPONSE', response => {
       this.setState({ sending: false }, () => {
-        if (this.state.lastSent !== response.id) { // Avoids unnecessary code execution
+        if (this.state.lastSent !== response.id || response.id === 'error') { // Avoids unnecessary code execution while allowing errors
           // Stringify content if not a string already
           if (typeof response.c !== 'string') response.c = JSON.stringify(response.c)
+
+          // Eplicitly display errors
+          if (response.id === 'error') emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
 
           // Determine what viewer to open
           switch (response.id.split(':')[1]) {
@@ -153,7 +187,9 @@ export default class Tool extends React.Component {
               emitOne('DISPLAY_RESPONSE_TOAST', { c: response.c, id: response.id })
               break
             default:
-              console.warn(`Unknown response viewer type: ${this.props.viewerType}`)
+              console.warn(`Unknown response viewer type "${response.id.split(':')[1]}"; using 'viewer'`)
+              emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
+              break
           }
         }
       })

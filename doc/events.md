@@ -16,3 +16,4 @@ This is a list of the events that can be emitted within the application, along w
 | OPEN_RESPONSE_VIEWER | Open the server response viewer. Used by tools that return long responses. | response | Object<c: Any, id: String\> |
 | DISPLAY_RESPONSE_TOAST | Display a toast with the server response. Used by tools that return short responses. | response | Object<c: Any, id: String\> |
 | RECEIVED_MAPS | Informs that the server map list has been received and written to storage. | None | None |
+| DISPLAY_NOTIFICATION | Display a generic notification. | data | String |
