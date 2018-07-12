@@ -4,7 +4,7 @@ import Tool from '../ToolBase'
 
 import { dispatcher } from '../../backend/dispatcher'
 
-export default class Kick extends React.Component {
+export default class Beacon extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -19,7 +19,7 @@ export default class Kick extends React.Component {
   ]
 
   socketPayload = [
-    { property: 'op', value: 'KICK' },
+    { property: 'op', value: 'BEACON' },
     { property: 'user', value: '#player-name' }
   ]
 
@@ -49,8 +49,8 @@ export default class Kick extends React.Component {
   render () {
     return (
       <Tool
-        title={'Kick player'}
-        icon={'not_interested'}
+        title={'Beacon player'}
+        icon={'highlight'}
         fields={this.fields}
         socketPayload={this.socketPayload}
         viewerType={'toast'}

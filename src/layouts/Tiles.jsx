@@ -8,6 +8,9 @@ import MapChange from 'tools/MapChange'
 import Slap from 'tools/Slap'
 import Slay from 'tools/Slay'
 import Kick from 'tools/Kick'
+import Ban from 'tools/Ban'
+import Beacon from 'tools/Beacon'
+import Burn from 'tools/Burn'
 import Gag from 'tools/Gag'
 import UnGag from 'tools/UnGag'
 import Mute from 'tools/Mute'
@@ -58,8 +61,10 @@ export default class Tiles extends React.Component {
           <Tile component={<UnMute/>}/>
         </Row>
         <Row>
+          <Tile component={<Ban/>}/>
           <Tile component={<Slap/>}/>
-
+          <Tile component={<Burn/>}/>
+          <Tile component={<Beacon/>}/>
         </Row>
       </div>
     )

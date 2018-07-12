@@ -4,7 +4,7 @@ import Tool from '../ToolBase'
 
 import { dispatcher } from '../../backend/dispatcher'
 
-export default class Kick extends React.Component {
+export default class Ban extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -15,12 +15,16 @@ export default class Kick extends React.Component {
   }
 
   fields = [
-    'Player name'
+    'Player name',
+    'Reason',
+    'Time'
   ]
 
   socketPayload = [
-    { property: 'op', value: 'KICK' },
-    { property: 'user', value: '#player-name' }
+    { property: 'op', value: 'BURN' },
+    { property: 'user', value: '#player-name' },
+    { property: 'reason', value: '#reason' },
+    { property: 'time', value: '#time' }
   ]
 
   autoCompletes = [
@@ -49,8 +53,8 @@ export default class Kick extends React.Component {
   render () {
     return (
       <Tool
-        title={'Kick player'}
-        icon={'not_interested'}
+        title={'Ban player'}
+        icon={'gavel'}
         fields={this.fields}
         socketPayload={this.socketPayload}
         viewerType={'toast'}

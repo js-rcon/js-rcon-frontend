@@ -117,19 +117,22 @@ export default class Tool extends React.Component {
       const fields = document.getElementsById(this.state.fields).map(f => {
         return {
           field: f.id.split(':')[1], // Truncate unique part away
+          uniqueField: f.id,
           value: f.value
         }
       })
 
       // Check that none of the fields are empty
       const malformed = []
-      fields.map(f => { if (!f.value) malformed.push(f.field) })
+      fields.map(f => {
+        // Formats into unique format
+        if (!f.value) malformed.push(f.uniqueField)
+      })
 
       if (malformed.length > 0) this.setState({ noInput: true, erroredFields: malformed, sending: false })
       else {
         // Join data into strings to compare them (Arrays cannot be directly compared)
-        // Also formats inputted IDs into the unique format used elsewhere (See L49)
-        const fieldsAreIntact = fields.map(f => `${this.props.title.toLowerCase().replaceAll(' ', '-')}:${f.field}`).join(' ') === this.state.fields.join(' ')
+        const fieldsAreIntact = fields.map(f => f.uniqueField).join(' ') === this.state.fields.join(' ')
 
         if (fieldsAreIntact) {
           const fieldsInTool = fields.map(f => f.field)
