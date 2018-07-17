@@ -51,7 +51,7 @@ export default class Tiles extends React.Component {
         <Row>
           <Tile component={<Eval/>}/>
           <Tile component={<MapChange/>}/>
-          <Tile component={<Kick/>}/>
+          <Tile component={<Beacon/>}/>
           <Tile component={<Slay/>}/>
         </Row>
         <Row>
@@ -62,9 +62,9 @@ export default class Tiles extends React.Component {
         </Row>
         <Row>
           <Tile component={<Ban/>}/>
+          <Tile component={<Kick/>}/>
           <Tile component={<Slap/>}/>
           <Tile component={<Burn/>}/>
-          <Tile component={<Beacon/>}/>
         </Row>
       </div>
     )

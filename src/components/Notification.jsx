@@ -30,7 +30,7 @@ export default class Notification extends React.Component {
         open={this.state.open}
         message={this.state.data}
         action={'OK'}
-        autoHideDuration={10000}
+        autoHideDuration={3000}
         onActionClick={this.close}
         onRequestClose={this.close}
       />

@@ -64,6 +64,22 @@ export default class Dashboard extends React.Component {
       this.setState({ autoProtectEnabled: enabled })
     })
 
+    dispatcher.on('RECEIVED_PLAYERS', connectionChanges => {
+      const c = connectionChanges
+
+      if (c.connected.length > 0) {
+        c.connected.forEach(player => {
+          emitOne('DISPLAY_NOTIFICATION', `User ${player} connected.`)
+        })
+      }
+
+      if (c.disconnected.length > 0) {
+        c.disconnected.forEach(player => {
+          emitOne('DISPLAY_NOTIFICATION', `User ${player} disconnected.`)
+        })
+      }
+    })
+
     this.socketHandlers()
   }
 

@@ -178,7 +178,7 @@ export default class Tool extends React.Component {
           // Stringify content if not a string already
           if (typeof response.c !== 'string') response.c = JSON.stringify(response.c)
 
-          // Eplicitly display errors
+          // Explicitly display errors
           if (response.id === 'error') emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
 
           // Determine what viewer to open

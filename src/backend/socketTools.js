@@ -12,9 +12,40 @@ function storeMaps (mapNameArray) {
 }
 
 function storePlayers (playerObjectArray) {
-  const playerNames = playerObjectArray.map(p => p.Nick)
-  sessionStorage.setItem('players', JSON.stringify(playerNames))
-  emitOne('RECEIVED_PLAYERS')
+  const oldPlayerNames = JSON.parse(sessionStorage.getItem('players')) || []
+  const newPlayerNames = playerObjectArray.map(p => p.Nick)
+  const connectionChanges = mapConnectsAndDisconnects(oldPlayerNames, newPlayerNames)
+
+  sessionStorage.setItem('players', JSON.stringify(newPlayerNames))
+  emitOne('RECEIVED_PLAYERS', connectionChanges)
+}
+
+/**
+ * Map connected and disconnected players.
+ * @param {Array<String>} oldInfo Array of player name strings in store
+ * @param {Array<String>} newInfo Array of newly received player name strings
+ */
+function mapConnectsAndDisconnects (oldInfo, newInfo) {
+  const result = {
+    connected: [],
+    disconnected: []
+  }
+
+  newInfo.forEach(player => {
+    // Player exists in new info but not old = connected
+    if (!oldInfo.includes(player)) result.connected.push(player)
+  })
+
+  oldInfo.forEach(player => {
+    // Player exists in old info but not new = disconnected
+    if (!newInfo.includes(player)) result.disconnected.push(player)
+  })
+
+  return result
+}
+
+function _getArrayDiff (array1, array2) {
+  return array1.filter(item => !array2.includes(item))
 }
 
 /**

@@ -28,13 +28,20 @@ export default class Beacon extends React.Component {
   ]
 
   processAutoCompletes () {
-    this.autoCompletes.map(o => {
-      if (typeof o.data === 'string') {
-        if (o.data.startsWith('%') && o.data !== this.state[o.data.substring(1)]) o.data = this.state[o.data.substring(1)]
+    const processed = []
+
+    this.autoCompletes.forEach(obj => {
+      const processedObj = { ...obj }
+
+      if (typeof obj.data === 'string' && obj.data.startsWith('%')) {
+        if (obj.data !== this.state[obj.data.substring(1)]) {
+          processedObj.data = this.state[obj.data.substring(1)]
+          processed.push(processedObj)
+        }
       }
     })
 
-    return this.autoCompletes
+    return processed
   }
 
   componentDidMount () {
@@ -49,7 +56,7 @@ export default class Beacon extends React.Component {
   render () {
     return (
       <Tool
-        title={'Beacon player'}
+        title={'Toggle beacon'}
         icon={'highlight'}
         fields={this.fields}
         socketPayload={this.socketPayload}
