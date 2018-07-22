@@ -104,6 +104,8 @@ export default class Dashboard extends React.Component {
     })
 
     this.socket.on('disconnect', () => {
+      emitOne('DISPLAY_NOTIFICATION', 'Disconnected from backend service. Reconnecting...')
+
       this.setState({ socketConnected: false })
       this.socket = null
       window.socket = null
