@@ -5,3 +5,5 @@ This is a list of error codes within the application, with information on their 
 | Code | Reason(s) | Origin(s) |
 | ---- | --------- | --------- |
 | Ghost | An unexpected HTTP request error occurred during login or auth status checking. | api.js, L26 and L59 |
+| Orphan | The WebSocket server is no longer sending heartbeats, or the client is not receiving them. | Dashboard.jsx, L84 |
+| Curtain | The client failed to reconnect to the WebSocket server. | Dashboard.jsx, L125 |

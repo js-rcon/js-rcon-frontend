@@ -67,7 +67,6 @@ export default class DebugOverlay extends React.Component {
           <p><Icon>power</Icon> Socket connected: <code>{JSON.stringify(this.props.debugData.socketConnected)}</code></p>
           <p><Icon>power_off</Icon> Socket failed: <code>{JSON.stringify(this.props.debugData.socketFailed)}</code></p>
           <p><Icon>error</Icon> Socket error: <code>{JSON.stringify(this.props.debugData.socketError)}</code></p>
-          <p><Icon>favorite</Icon> Receiving heartbeat: <code>{JSON.stringify(this.props.debugData.receivingHeartbeat)}</code></p>
         </div>
       </Dialog>
     )

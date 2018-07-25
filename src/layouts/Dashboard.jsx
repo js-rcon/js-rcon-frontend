@@ -7,7 +7,6 @@ import Tiles from '../layouts/Tiles'
 
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
-import ErrorOverlay from '../components/ErrorOverlay'
 import DebugOverlay from '../components/DebugOverlay'
 import ResponseViewer from '../components/ResponseViewer'
 import ResponseToast from '../components/ResponseToast'
@@ -17,7 +16,7 @@ import Spacer from '../components/Spacer'
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
-import { socketBootup, storeMaps, storePlayers } from '../backend/socketTools'
+import { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, processHeartbeatTimeout } from '../backend/socketTools'
 
 /*
   TODO: Different views:
@@ -33,9 +32,9 @@ export default class Dashboard extends React.Component {
     this.state = {
       // Sockets
       socketConnected: false,
+      socketReconnecting: false,
       socketFailed: false,
       socketError: null,
-      receivingHeartbeat: false,
       // Component-specific state
       receivedLogoutSignal: false,
       autoProtectEnabled: window.settings.autoProtectEnabled || false
@@ -80,6 +79,14 @@ export default class Dashboard extends React.Component {
       }
     })
 
+    dispatcher.on('NO_HEARTBEAT', () => {
+      emitOne('REQUEST_ERROR_OVERLAY', {
+        error: 'The client is no longer receiving a heartbeat signal from the server.',
+        msg: 'Client is not receiving heartbeat, please reboot backend service.',
+        code: 'Orphan'
+      })
+    })
+
     this.socketHandlers()
   }
 
@@ -94,8 +101,9 @@ export default class Dashboard extends React.Component {
 
     this.socket.on('connect', () => {
       this.socket.on('authenticated', () => {
-        this.setState({ socketConnected: true })
+        this.setState({ socketConnected: true, socketReconnecting: false })
         socketBootup()
+        setHeartbeatTimeout()
       })
 
       this.socket.on('unauthorized', err => {
@@ -104,12 +112,22 @@ export default class Dashboard extends React.Component {
     })
 
     this.socket.on('disconnect', () => {
-      emitOne('DISPLAY_NOTIFICATION', 'Disconnected from backend service. Reconnecting...')
+      emitOne('DISPLAY_NOTIFICATION', 'Disconnected from server. Reconnecting...')
 
-      this.setState({ socketConnected: false })
-      this.socket = null
-      window.socket = null
-      this.socketHandlers()
+      if (!this.state.socketReconnecting) {
+        this.setState({ socketConnected: false, socketReconnecting: true })
+        this.socket = null
+        window.socket = null
+        this.socketHandlers()
+
+        setTimeout(() => {
+          emitOne('REQUEST_ERROR_OVERLAY', {
+            error: 'Cannot reconnect to server, connection timed out after 5 seconds.',
+            msg: 'Client cannot connect to backend service. Please ensure the backend service is running and intact.',
+            code: 'Curtain'
+          })
+        }, 7000)
+      }
     })
 
     this.socket.on('message', msg => {
@@ -122,8 +140,7 @@ export default class Dashboard extends React.Component {
       switch (message.op) {
         case 'HEARTBEAT_RESPONSE':
           storePlayers(message.c)
-
-          if (!this.state.receivingHeartbeat) this.setState({ receivingHeartbeat: true })
+          processHeartbeatTimeout()
 
           // Automatically kick new and private users if automatic protection is enabled
           if (this.state.autoProtectEnabled && message.c.length > 0) {
@@ -159,35 +176,32 @@ export default class Dashboard extends React.Component {
   componentWillUnmount () {
     sessionStorage.removeItem('maps')
     sessionStorage.removeItem('players')
+    sessionStorage.removeItem('heartbeat')
     this.socket.close()
   }
 
   render () {
+    const debugOverlay = <DebugOverlay
+      debugData={{
+        inheritedState: this.props.inheritedState,
+        token: this.props.token,
+        socketConnected: this.state.socketConnected,
+        socketFailed: this.state.socketFailed,
+        socketError: this.state.socketError
+      }}
+    />
+
     if (this.state.receivedLogoutSignal) return <Redirect to={'/'}/>
 
+    // TODO: In production, replace debug with appropriate licenses
     return (
       <div>
         {/* Mount hidden components */}
-        <ErrorOverlay/>
-        {
-          // Enable debug metric overlay in dev
-          process.env && process.env.NODE_ENV === 'development'
-            ? <DebugOverlay
-              debugData={{
-                inheritedState: this.props.inheritedState,
-                token: this.props.token,
-                socketConnected: this.state.socketConnected,
-                socketFailed: this.state.socketFailed,
-                socketError: this.state.socketError,
-                receivingHeartbeat: this.state.receivingHeartbeat
-              }}
-            />
-            : ''
-        }
         <SettingsOverlay/>
         <ResponseViewer/>
         <ResponseToast/>
         <Notification/>
+        { process.env && process.env.NODE_ENV === 'development' ? debugOverlay : '' }
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>
