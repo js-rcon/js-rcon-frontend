@@ -30,13 +30,21 @@ export default class ErrorOverlay extends React.Component {
 
   componentDidMount () {
     dispatcher.on('REQUEST_ERROR_OVERLAY', args => {
-      this.setState({ error: args.error.toString(), errorMessage: args.msg.toString(), errorCode: args.code.toString() })
-      this.open()
+      this.open(
+        args.error ? args.error.toString() : 'None',
+        args.msg ? args.msg.toString() : 'None',
+        args.code ? args.code.toString() : 'None'
+      )
     })
   }
 
-  open () {
-    this.setState({ open: true })
+  open (error, msg, code) {
+    this.setState({
+      open: true,
+      error: error || 'None',
+      errorMessage: msg || 'None',
+      errorCode: code || 'None'
+    })
   }
 
   render () {

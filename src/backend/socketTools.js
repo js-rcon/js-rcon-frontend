@@ -44,8 +44,24 @@ function mapConnectsAndDisconnects (oldInfo, newInfo) {
   return result
 }
 
-function _getArrayDiff (array1, array2) {
-  return array1.filter(item => !array2.includes(item))
+function setHeartbeatTimeout () {
+  const timeoutId = setTimeout(() => emitOne('NO_HEARTBEAT'), 3000)
+  sessionStorage.setItem('heartbeat', JSON.stringify(timeoutId))
+}
+
+function clearAndSetNewTimeout () {
+  const oldTimeoutId = JSON.parse(sessionStorage.getItem('heartbeat'))
+
+  // Anti-tamper
+  if (!isNaN(oldTimeoutId)) {
+    clearTimeout(oldTimeoutId)
+    setHeartbeatTimeout()
+  }
+}
+
+function processHeartbeatTimeout () {
+  if (sessionStorage.getItem('heartbeat')) clearAndSetNewTimeout()
+  else setHeartbeatTimeout()
 }
 
 /**
@@ -59,4 +75,4 @@ function _sendSocketMessage (payload) {
   window.socket.send(JSON.stringify(payload))
 }
 
-export { socketBootup, storeMaps, storePlayers }
+export { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, processHeartbeatTimeout }

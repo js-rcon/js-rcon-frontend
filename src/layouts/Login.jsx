@@ -1,7 +1,6 @@
 import React from 'react'
 
 import LoginCard from '../components/LoginCard'
-import ErrorOverlay from '../components/ErrorOverlay'
 
 import { dispatcher } from '../backend/dispatcher'
 
@@ -18,9 +17,6 @@ export default class Login extends React.Component {
   render () {
     return (
       <div className={`login-container ${this.state.visible ? 'visible' : 'invisible'}`}>
-        {/* Mount hidden components */}
-        <ErrorOverlay/>
-        {/* Main interface */}
         <img
           className={'login-logo'}
           src={require('../assets/images/logo.png')}
