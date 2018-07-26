@@ -15,3 +15,13 @@ Document.prototype.getElementsById = function (elementIdArray) {
     })
   }
 }
+
+Storage.prototype.removeItems = function (itemIdArray) {
+  if (!Array.isArray(itemIdArray)) console.error(`Invalid parameter type '${typeof elementIdArray}' submitted to removeItems, expected 'array'`)
+  else {
+    itemIdArray.forEach(item => {
+      if (typeof item !== 'string') console.error(`Ignoring invalid element ID '${item}' in removeItems, was of type '${typeof elementId}' not 'string'`)
+      else sessionStorage.removeItem(item)
+    })
+  }
+}

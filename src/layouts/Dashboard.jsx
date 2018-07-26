@@ -16,7 +16,7 @@ import Spacer from '../components/Spacer'
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
-import { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, processHeartbeatTimeout } from '../backend/socketTools'
+import { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, clearHeartbeatTimeout, processHeartbeatTimeout } from '../backend/socketTools'
 
 /*
   TODO: Different views:
@@ -112,21 +112,23 @@ export default class Dashboard extends React.Component {
     })
 
     this.socket.on('disconnect', () => {
-      emitOne('DISPLAY_NOTIFICATION', 'Disconnected from server. Reconnecting...')
+      if (!sessionStorage.getItem('disconnected')) { // Only run on unclean exit
+        emitOne('DISPLAY_NOTIFICATION', 'Disconnected from server. Reconnecting...')
 
-      if (!this.state.socketReconnecting) {
-        this.setState({ socketConnected: false, socketReconnecting: true })
-        this.socket = null
-        window.socket = null
-        this.socketHandlers()
+        if (!this.state.socketReconnecting) {
+          this.setState({ socketConnected: false, socketReconnecting: true })
+          this.socket = null
+          window.socket = null
+          this.socketHandlers()
 
-        setTimeout(() => {
-          emitOne('REQUEST_ERROR_OVERLAY', {
-            error: 'Cannot reconnect to server, connection timed out after 5 seconds.',
-            msg: 'Client cannot connect to backend service. Please ensure the backend service is running and intact.',
-            code: 'Curtain'
-          })
-        }, 7000)
+          setTimeout(() => {
+            emitOne('REQUEST_ERROR_OVERLAY', {
+              error: 'Cannot reconnect to server, connection timed out after 5 seconds.',
+              msg: 'Client cannot connect to backend service. Please ensure the backend service is running and intact.',
+              code: 'Curtain'
+            })
+          }, 7000)
+        }
       }
     })
 
@@ -174,9 +176,9 @@ export default class Dashboard extends React.Component {
   }
 
   componentWillUnmount () {
-    sessionStorage.removeItem('maps')
-    sessionStorage.removeItem('players')
-    sessionStorage.removeItem('heartbeat')
+    clearHeartbeatTimeout()
+    sessionStorage.setItem('disconnected', 'true')
+    sessionStorage.removeItems(['maps', 'players', 'playerData', 'heartbeat'])
     this.socket.close()
   }
 

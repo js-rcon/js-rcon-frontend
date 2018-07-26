@@ -21,6 +21,7 @@ export default class Main extends React.Component {
   }
 
   sessionStart (username, token) {
+    if (sessionStorage.removeItem('disconnected')) sessionStorage.removeItem('disconnected') // Cleanup from logout if applicable
     sessionStorage.setItem('token', encryptToken(token))
     this.setState({ loggedIn: true, username: username })
   }

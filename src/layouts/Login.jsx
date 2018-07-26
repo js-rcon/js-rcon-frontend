@@ -11,6 +11,7 @@ export default class Login extends React.Component {
   }
 
   componentDidMount () {
+    if (sessionStorage.getItem('disconnected')) this.setState({ visible: true })
     dispatcher.on('DISPLAY_LOGIN', () => this.setState({ visible: true }))
   }
 

@@ -89,12 +89,10 @@ export default class SettingsOverlay extends React.Component {
     const dialogActions = [
       <FlatButton
         label={'Cancel'}
-        primary={true}
         onClick={this.revertSettings}
       />,
       <FlatButton
         label={'Save'}
-        primary={true}
         onClick={this.saveSettings}
       />
     ]

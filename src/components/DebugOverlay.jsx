@@ -48,7 +48,6 @@ export default class DebugOverlay extends React.Component {
     const dialogActions = [
       <FlatButton
         label={'Close'}
-        primary={true}
         onClick={this.close}
       />
     ]

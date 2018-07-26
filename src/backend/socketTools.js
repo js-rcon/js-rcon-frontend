@@ -17,6 +17,7 @@ function storePlayers (playerObjectArray) {
   const connectionChanges = mapConnectsAndDisconnects(oldPlayerNames, newPlayerNames)
 
   sessionStorage.setItem('players', JSON.stringify(newPlayerNames))
+  sessionStorage.setItem('playerData', JSON.stringify(playerObjectArray)) // Store raw data for other purposes
   emitOne('RECEIVED_PLAYERS', connectionChanges)
 }
 
@@ -59,6 +60,15 @@ function clearAndSetNewTimeout () {
   }
 }
 
+function clearHeartbeatTimeout () {
+  const timeoutId = JSON.parse(sessionStorage.getItem('heartbeat'))
+
+  // Anti-tamper
+  if (!isNaN(timeoutId)) {
+    clearTimeout(timeoutId)
+  }
+}
+
 function processHeartbeatTimeout () {
   if (sessionStorage.getItem('heartbeat')) clearAndSetNewTimeout()
   else setHeartbeatTimeout()
@@ -75,4 +85,4 @@ function _sendSocketMessage (payload) {
   window.socket.send(JSON.stringify(payload))
 }
 
-export { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, processHeartbeatTimeout }
+export { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, clearHeartbeatTimeout, processHeartbeatTimeout }
