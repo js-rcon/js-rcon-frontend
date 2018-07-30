@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "bulma": "^0.7.1",
+    "flag-icon-css": "^3.0.0",
     "material-ui": "^0.20.0",
     "prop-types": "^15.6.1",
     "randstr": "^1.0.6",

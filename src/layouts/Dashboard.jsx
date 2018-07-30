@@ -8,6 +8,7 @@ import Tiles from '../layouts/Tiles'
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
 import DebugOverlay from '../components/DebugOverlay'
+import AboutOverlay from '../components/AboutOverlay'
 import ResponseViewer from '../components/ResponseViewer'
 import ResponseToast from '../components/ResponseToast'
 import Notification from '../components/Notification'
@@ -200,6 +201,7 @@ export default class Dashboard extends React.Component {
       <div>
         {/* Mount hidden components */}
         <SettingsOverlay/>
+        <AboutOverlay/>
         <ResponseViewer/>
         <ResponseToast/>
         <Notification/>

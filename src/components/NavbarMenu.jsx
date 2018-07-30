@@ -15,6 +15,12 @@ export default class NavbarMenu extends React.Component {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         targetOrigin={{ horizontal: 'right', vertical: 'top' }}
       >
+        {/* About */}
+        <MenuItem
+          primaryText={'About'}
+          rightIcon={<i className={'material-icons'}>info</i>}
+          onClick={() => emitOne('OPEN_ABOUT')}
+        />
         {/* Settings */}
         <MenuItem
           primaryText={'Settings'}

@@ -80,9 +80,9 @@ export default class LoginCard extends React.Component {
 
   render () {
     // Detect enter button press
-    window.onkeypress = keyEvent => {
+    window.onkeydown = keyEvent => {
       // this.state.loggingIn prevents spamming
-      if (!this.state.loggingIn && keyEvent.charCode === 13) { // 13 = Enter
+      if (!this.state.loggingIn && keyEvent.key === 'Enter') {
         this.setState({ loggingIn: true })
         this.handleSubmit(document.getElementById('login-username').value, document.getElementById('login-password').value)
       }

@@ -71,3 +71,62 @@ body {
     overflow-y: scroll;
   }
 }
+
+.about {
+  .logo {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    width: 100px;
+    height: auto;
+  }
+
+  .title {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 30px;
+    color: #000000;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 17px;
+    color: #000000;
+  }
+
+  .content {
+    padding-top: 20px;
+    text-align: center;
+
+    a {
+      color: #3273dc;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 200ms;
+    }
+
+    a:hover {
+      color: #FF9800;
+      transition: all 200ms;
+    }
+
+    .flag {
+      position: relative;
+      margin-left: 2px;
+      margin-right: 2px;
+      transform: translateY(4px);
+      font-size: 25px;
+      border: 0.5mm solid #000000;
+      border-radius: 3px;
+    }
+  }
+}
+
+.licenses {
+  .title {
+    padding-bottom: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: #000000;
+  }
+}
