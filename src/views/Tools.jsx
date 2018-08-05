@@ -43,7 +43,7 @@ class Tile extends React.Component {
   }
 }
 
-export default class Tiles extends React.Component {
+export default class Tools extends React.Component {
   render () {
     // Use 4 tiles per row
     return (

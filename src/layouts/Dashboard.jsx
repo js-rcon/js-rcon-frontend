@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import * as io from 'socket.io-client'
 import { Redirect } from 'react-router-dom'
 
-import Tiles from '../layouts/Tiles'
+import Tools from '../views/Tools'
 
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
@@ -13,6 +13,7 @@ import ResponseViewer from '../components/ResponseViewer'
 import ResponseToast from '../components/ResponseToast'
 import Notification from '../components/Notification'
 import Spacer from '../components/Spacer'
+import SidebarMenu from '../components/SidebarMenu'
 
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
@@ -196,7 +197,6 @@ export default class Dashboard extends React.Component {
 
     if (this.state.receivedLogoutSignal) return <Redirect to={'/'}/>
 
-    // TODO: In production, replace debug with appropriate licenses
     return (
       <div>
         {/* Mount hidden components */}
@@ -205,11 +205,12 @@ export default class Dashboard extends React.Component {
         <ResponseViewer/>
         <ResponseToast/>
         <Notification/>
+        <SidebarMenu/>
         { process.env && process.env.NODE_ENV === 'development' ? debugOverlay : '' }
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>
-        <Tiles/>
+        <Tools/>
       </div>
     )
   }
