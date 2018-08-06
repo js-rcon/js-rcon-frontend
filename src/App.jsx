@@ -11,11 +11,9 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 import Main from './layouts/Main'
 import { dispatcher } from './backend/dispatcher'
+import { loadSettings } from './backend/settingsLoader'
 
-// Load settings from localStorage before application init
-// Using JSON.parse because localStorage.getItem returns a string
-if (!JSON.parse(localStorage.getItem('settings'))) localStorage.setItem('settings', JSON.stringify({}))
-window.settings = JSON.parse(localStorage.getItem('settings'))
+loadSettings()
 
 export default class App extends React.Component {
   constructor (props) {
