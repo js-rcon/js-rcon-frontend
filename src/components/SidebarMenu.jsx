@@ -7,7 +7,7 @@ import { emitOne, dispatcher } from '../backend/dispatcher'
 export default class SidebarMenu extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { open: false, selected: window.settings.defaultView || '' }
+    this.state = { open: false, selected: window.settings.defaultView || 'tools' }
     this.toggle = this.toggle.bind(this)
     this.select = this.select.bind(this)
   }
@@ -18,20 +18,33 @@ export default class SidebarMenu extends React.Component {
 
   select (requestedView) {
     emitOne('REQUEST_VIEW_CHANGE', requestedView)
-    this.setState({ open: false, selectedView: requestedView })
+    this.setState({ open: false, selected: requestedView })
   }
 
   componentDidMount () {
     dispatcher.on('TOGGLE_SIDEBAR', () => this.toggle())
   }
 
-  // TODO: Implement new views, selection and toggling between them
-
   render () {
     const menuItems = [
-      <MenuItem key={'tools'} onClick={() => this.select('tools')}>Tools</MenuItem>,
-      <MenuItem key={'users'} onClick={() => this.select('users')}>Users</MenuItem>,
-      <MenuItem key={'console'} onClick={() => this.select('console')}>Console</MenuItem>
+      <MenuItem
+        primaryText={'Tools'}
+        rightIcon={<i className={`material-icons ${this.state.selected === 'tools' ? 'sidebar-icon-selected' : ''}`}>settings</i>}
+        key={'tools'}
+        onClick={() => this.select('tools')}
+      />,
+      <MenuItem
+        primaryText={'Users'}
+        rightIcon={<i className={`material-icons ${this.state.selected === 'users' ? 'sidebar-icon-selected' : ''}`}>person</i>}
+        key={'users'}
+        onClick={() => this.select('users')}
+      />,
+      <MenuItem
+        primaryText={'Console'}
+        rightIcon={<i className={`material-icons ${this.state.selected === 'console' ? 'sidebar-icon-selected' : ''}`}>computer</i>}
+        key={'console'}
+        onClick={() => this.select('console')}
+      />
     ]
 
     return (

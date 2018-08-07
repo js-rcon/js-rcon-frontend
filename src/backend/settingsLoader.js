@@ -6,7 +6,6 @@ function loadSettings () {
     window.settings = {}
   }
 
-  // Pre-flight check that settings are initiated and not malformed
   // Not parsing yet to avoid parsing issues with malforming and to check JSON later
   const settings = localStorage.getItem('settings')
 

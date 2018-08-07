@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import * as io from 'socket.io-client'
 import { Redirect } from 'react-router-dom'
 
+// Views
 import Tools from '../views/Tools'
+import Users from '../views/Users'
+import Console from '../views/Console'
 
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
@@ -39,7 +42,8 @@ export default class Dashboard extends React.Component {
       socketError: null,
       // Component-specific state
       receivedLogoutSignal: false,
-      autoProtectEnabled: window.settings.autoProtectEnabled || false
+      autoProtectEnabled: window.settings.autoProtectEnabled || false,
+      selectedView: window.settings.defaultView || 'tools'
     }
 
     this.socket = null
@@ -87,6 +91,10 @@ export default class Dashboard extends React.Component {
         msg: 'Client is not receiving heartbeat, please reboot backend service.',
         code: 'Orphan'
       })
+    })
+
+    dispatcher.on('REQUEST_VIEW_CHANGE', requestedView => {
+      this.setState({ selectedView: requestedView })
     })
 
     this.socketHandlers()
@@ -195,6 +203,12 @@ export default class Dashboard extends React.Component {
       }}
     />
 
+    const views = {
+      tools: <Tools/>,
+      users: <Users/>,
+      console: <Console/>
+    }
+
     if (this.state.receivedLogoutSignal) return <Redirect to={'/'}/>
 
     return (
@@ -210,7 +224,7 @@ export default class Dashboard extends React.Component {
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>
-        <Tools/>
+        {views[this.state.selectedView]}
       </div>
     )
   }
