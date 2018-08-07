@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Toggle from 'material-ui/Toggle'
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 
 import { dispatcher, emitOne } from '../backend/dispatcher'
-
 class Row extends React.Component {
   render () {
     return (
@@ -25,6 +25,25 @@ class Col extends React.Component {
     )
   }
 }
+class Label extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { darkThemeEnabled: window.settings.darkThemeEnabled || false }
+  }
+
+  componentDidMount () {
+    dispatcher.on('TOGGLE_THEME', enabled => this.setState({ darkThemeEnabled: enabled }))
+  }
+
+  render () {
+    return (
+      <div className={`setting-label ${this.props.child ? 'label-child' : ''}`}>
+        <span className={`material-icons ${this.state.darkThemeEnabled ? 'icon-light' : 'icon'}`}>{this.props.icon}</span>
+        <span className={`text ${this.state.darkThemeEnabled ? 'text-light' : ''}`}>{this.props.text}</span>
+      </div>
+    )
+  }
+}
 
 export default class SettingsOverlay extends React.Component {
   constructor () {
@@ -33,9 +52,10 @@ export default class SettingsOverlay extends React.Component {
       open: false,
       settings: JSON.parse(localStorage.getItem('settings')) || {
         darkThemeEnabled: false,
-        autoProtectEnabled: false
+        autoProtectEnabled: false,
+        defaultView: 'tools'
       },
-      oldSettings: null
+      oldSettings: {}
     }
 
     this.open = this.open.bind(this)
@@ -43,6 +63,14 @@ export default class SettingsOverlay extends React.Component {
     this.saveSettings = this.saveSettings.bind(this)
     this.revertSettings = this.revertSettings.bind(this)
     this.updateSetting = this.updateSetting.bind(this)
+  }
+
+  styles = {
+    optionLabel: {
+      fontWeight: 300,
+      position: 'relative',
+      transform: 'translate(0px, -2px)'
+    }
   }
 
   open () {
@@ -107,20 +135,34 @@ export default class SettingsOverlay extends React.Component {
       >
         <Row>
           <Col>
+            <Label icon={'computer'} text={'Default view'}/>
+            <RadioButtonGroup
+              name={'default-view'}
+              valueSelected={this.state.settings.defaultView}
+              onChange={(event, value) => this.updateSetting('defaultView', value)}
+            >
+              <RadioButton label={'Tools'} value={'tools'} labelStyle={this.styles.optionLabel}/>
+              <RadioButton label={'Users'} value={'users'} labelStyle={this.styles.optionLabel}/>
+              <RadioButton label={'Console'} value={'console'} labelStyle={this.styles.optionLabel}/>
+            </RadioButtonGroup>
+          </Col>
+          <Col>
+            <Label icon={'color_lens'} text={'Theme'}/>
             <Toggle
               label={'Dark theme'}
               labelPosition={'right'}
+              labelStyle={this.styles.optionLabel}
               toggled={this.state.settings ? this.state.settings.darkThemeEnabled : false}
               onToggle={(event, isEnabled) => {
                 emitOne('TOGGLE_THEME', isEnabled)
                 this.updateSetting('darkThemeEnabled', isEnabled)
               }}
             />
-          </Col>
-          <Col>
+            <Label child icon={'lock'} text={'Auto-Protect'}/>
             <Toggle
               label={'Automatically kick private/new users'}
               labelPosition={'right'}
+              labelStyle={this.styles.optionLabel}
               toggled={this.state.settings ? this.state.settings.autoProtectEnabled : false}
               onToggle={(event, isEnabled) => {
                 emitOne('TOGGLE_AUTOPROTECT', isEnabled)
@@ -140,4 +182,10 @@ Row.propTypes = {
 
 Col.propTypes = {
   children: PropTypes.node.isRequired
+}
+
+Label.propTypes = {
+  icon: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  child: PropTypes.any
 }

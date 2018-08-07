@@ -3,7 +3,10 @@ import PropTypes from 'prop-types'
 import * as io from 'socket.io-client'
 import { Redirect } from 'react-router-dom'
 
-import Tiles from '../layouts/Tiles'
+// Views
+import Tools from '../views/Tools'
+import Users from '../views/Users'
+import Console from '../views/Console'
 
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
@@ -13,6 +16,7 @@ import ResponseViewer from '../components/ResponseViewer'
 import ResponseToast from '../components/ResponseToast'
 import Notification from '../components/Notification'
 import Spacer from '../components/Spacer'
+import SidebarMenu from '../components/SidebarMenu'
 
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
@@ -38,7 +42,8 @@ export default class Dashboard extends React.Component {
       socketError: null,
       // Component-specific state
       receivedLogoutSignal: false,
-      autoProtectEnabled: window.settings.autoProtectEnabled || false
+      autoProtectEnabled: window.settings.autoProtectEnabled || false,
+      selectedView: window.settings.defaultView || 'tools'
     }
 
     this.socket = null
@@ -86,6 +91,10 @@ export default class Dashboard extends React.Component {
         msg: 'Client is not receiving heartbeat, please reboot backend service.',
         code: 'Orphan'
       })
+    })
+
+    dispatcher.on('REQUEST_VIEW_CHANGE', requestedView => {
+      this.setState({ selectedView: requestedView })
     })
 
     this.socketHandlers()
@@ -194,9 +203,14 @@ export default class Dashboard extends React.Component {
       }}
     />
 
+    const views = {
+      tools: <Tools/>,
+      users: <Users/>,
+      console: <Console/>
+    }
+
     if (this.state.receivedLogoutSignal) return <Redirect to={'/'}/>
 
-    // TODO: In production, replace debug with appropriate licenses
     return (
       <div>
         {/* Mount hidden components */}
@@ -205,11 +219,12 @@ export default class Dashboard extends React.Component {
         <ResponseViewer/>
         <ResponseToast/>
         <Notification/>
+        <SidebarMenu/>
         { process.env && process.env.NODE_ENV === 'development' ? debugOverlay : '' }
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>
-        <Tiles/>
+        {views[this.state.selectedView]}
       </div>
     )
   }

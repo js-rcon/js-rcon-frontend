@@ -130,3 +130,61 @@ body {
     color: #000000;
   }
 }
+
+.setting-label {
+  padding-bottom: 7px;
+
+  .text {
+    position: absolute;
+    transform: translate(0, 0.2mm);
+    color: rgba(0, 0, 0, 0.87);
+    padding-left: 5px;
+  }
+
+  .text-light {
+    color: #FFFFFF;
+  }
+
+  .icon {
+    color: #000000;
+  }
+
+  .icon-light {
+    color: #FFFFFF;
+  }
+}
+
+.label-child {
+  padding-top: 10px;
+}
+
+.sidebar-icon-selected {
+  color: #FF9800;
+  animation-duration: 2s;
+  animation-fill-mode: both;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: flash;
+  animation-name: flash;
+}
+
+// Animation borrowed from animate.css (See in-application licenses)
+
+@-webkit-keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash {
+  from, 50%, to {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0.5;
+  }
+}

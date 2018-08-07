@@ -18,3 +18,6 @@ This is a list of the events that can be emitted within the application, along w
 | RECEIVED_MAPS | Informs that the server map list has been received and written to storage. | None | None |
 | RECEIVED_PLAYERS | Informs that the server player list has been received and written to storage. Accompanied by changes in connections. | connectionChanges | Object<Array> |
 | DISPLAY_NOTIFICATION | Display a generic notification. | data | String |
+| TOGGLE_LICENSES | Toggle between the license and about view in the about overlay. | None | None |
+| TOGGLE_SIDEBAR | Toggle the sidebar menu. | None | None |
+| REQUEST_VIEW_CHANGE | Emitted when a sidebar menu item is clicked and a new view needs to be rendered | requestedView | String |
