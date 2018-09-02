@@ -1,0 +1,31 @@
+// Tool tile (Container)
+.dashboard-tile {
+  padding: 20px;
+  min-height: 180px;
+  max-width: 360px;
+}
+
+// Tool tile content
+.tool {
+  .title-container {
+    padding-bottom: 5px; 
+  }
+
+  .button-container {
+    padding-top: 10px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 23px;
+  }
+
+  // Vertically aligns icon with text 
+  .icon {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 7px;
+    padding-right: 5px;
+    font-size: 30px;
+  }
+}

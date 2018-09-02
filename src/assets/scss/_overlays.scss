@@ -1,0 +1,123 @@
+// Debug text overlay in light theme (Does not change automatically)
+.debug-text-light {
+  color: #000000;
+}
+
+// Debug overlay text in dark theme (Does not change automatically)
+.debug-text-dark {
+  color: #FFFFFF;
+}
+
+// Overlay
+.debug {
+  code {
+    color: gray;
+    word-wrap: break-word;
+  }
+
+  // Vertically aligns icon with text
+  .metric-icon {
+    display: inline-block;
+    vertical-align: middle;
+    padding-bottom: 3px;
+    padding-right: 5px;
+  }
+}
+
+// Response viewer
+.response-viewer {
+  .response {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+}
+
+// About overlay
+.about {
+  .logo {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    width: 100px;
+    height: auto;
+  }
+
+  .title {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 30px;
+    color: #000000;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 17px;
+    color: #000000;
+  }
+
+  .content {
+    padding-top: 20px;
+    text-align: center;
+
+    a {
+      color: #3273dc;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 200ms;
+    }
+
+    a:hover {
+      color: #FF9800;
+      transition: all 200ms;
+    }
+
+    .flag {
+      position: relative;
+      margin-left: 2px;
+      margin-right: 2px;
+      transform: translateY(4px);
+      font-size: 25px;
+      border: 0.5mm solid #000000;
+      border-radius: 3px;
+    }
+  }
+}
+
+// Licenses submenu of overlay
+.licenses {
+  .title {
+    padding-bottom: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: #000000;
+  }
+}
+
+// Label for each setting in settings overlay
+.setting-label {
+  padding-bottom: 7px;
+
+  .text {
+    position: absolute;
+    transform: translate(0, 0.2mm);
+    color: rgba(0, 0, 0, 0.87);
+    padding-left: 5px;
+  }
+
+  .text-light {
+    color: #FFFFFF;
+  }
+
+  .icon {
+    color: #000000;
+  }
+
+  .icon-light {
+    color: #FFFFFF;
+  }
+}
+
+// Override for non-first child setting labels
+.label-child {
+  padding-top: 10px;
+}

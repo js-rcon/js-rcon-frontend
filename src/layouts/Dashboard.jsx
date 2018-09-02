@@ -61,6 +61,8 @@ export default class Dashboard extends React.Component {
   ]
 
   componentDidMount () {
+    window.onkeydown = null // Reset enter handler
+
     dispatcher.on('LOGOUT_SIGNAL', () => {
       this.setState({ receivedLogoutSignal: true })
     })

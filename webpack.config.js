@@ -1,25 +1,31 @@
 const path = require('path')
 const webpack = require('webpack')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
-const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin')
+const ExtractCSSWebpackPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSWebpackPlugin = require('optimize-css-assets-webpack-plugin')
+const OptimizeJSWebpackPlugin = require('uglifyjs-webpack-plugin')
 
-// Determine if development or not
-const dev = process.env.NODE_ENV !== 'production' && process.argv.indexOf('-p') === -1
+const dev = process.env.NODE_ENV !== 'production' || process.argv.indexOf('-p') === -1
 
-// HTML plugin
-const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
+const HTMLInjecterConfig = new HTMLWebpackPlugin({
   template: path.join(__dirname, '/src/index.html'),
   filename: 'index.html',
   inject: 'body'
 })
 
-// SASS => CSS
-const ExtractSassPluginConfig = new ExtractTextWebpackPlugin({
-  filename: '[name].[hash].css',
-  disable: process.env.NODE_ENV !== 'production'
+const CSSExtracterConfig = new ExtractCSSWebpackPlugin({
+  filename: dev ? '[name].css' : '[name].[hash].css',
+  chunkFilename: dev ? '[id].css' : '[id].[hash].css'
 })
 
-// Environment
+const JSOptimizerConfig = new OptimizeJSWebpackPlugin({
+  cache: true,
+  parallel: true,
+  sourceMap: true
+})
+
+const CSSOptimizerConfig = new OptimizeCSSWebpackPlugin({})
+
 const EnvironmentConfig = new webpack.DefinePlugin({
   'process.env': {
     NODE_ENV: JSON.stringify('production')
@@ -38,11 +44,18 @@ module.exports = {
       'Access-Control-Allow-Origin': '*' // Allow CORS
     }
   },
+
+  // Production optimisers
+  optimization: {
+    minimizer: dev ? [] : [ JSOptimizerConfig, CSSOptimizerConfig ]
+  },
+
   // Entry point
   entry: [
     'react-hot-loader/patch',
     path.join(__dirname, '/src/index.jsx')
   ],
+
   // Dummies for native Node modules not present in browser scope
   node: {
     fs: 'empty',
@@ -50,6 +63,7 @@ module.exports = {
     tls: 'empty',
     crypto: 'empty'
   },
+
   // Loaders
   module: {
     rules: [
@@ -60,13 +74,11 @@ module.exports = {
       },
       { // SCSS
         test: /\.scss$/,
-        use: ExtractSassPluginConfig.extract({
-          use: [
-            { loader: 'css-loader' },
-            { loader: 'sass-loader' }
-          ],
-          fallback: 'style-loader'
-        })
+        use: [
+          dev ? 'style-loader' : ExtractCSSWebpackPlugin.loader,
+          'css-loader',
+          'sass-loader'
+        ]
       },
       { // Images
         test: /\.(jpe?g|png|gif|svg)$/i,
@@ -82,6 +94,7 @@ module.exports = {
       }
     ]
   },
+
   // Extension and folder alias config
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -89,21 +102,23 @@ module.exports = {
       tools: path.resolve(__dirname, 'src/components/tools')
     }
   },
+
   // Production build
   output: {
     filename: 'index.js',
     path: path.join(__dirname, '/build')
   },
+
   mode: dev ? 'development' : 'production',
   plugins:
-    dev ? [ // Development - use hot reload and named modules
-      HTMLWebpackPluginConfig,
-      ExtractSassPluginConfig,
+    dev ? [
+      HTMLInjecterConfig,
+      CSSExtracterConfig,
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NamedModulesPlugin()
-    ] : [ // Production - generate public build
-      HTMLWebpackPluginConfig,
-      ExtractSassPluginConfig,
+    ] : [
+      HTMLInjecterConfig,
+      CSSExtracterConfig,
       EnvironmentConfig
     ]
 }

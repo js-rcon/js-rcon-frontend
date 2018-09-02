@@ -1,5 +1,6 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 // Global modules
@@ -7,8 +8,14 @@
 @import '~bulma/sass/grid/_all';
 @import '~flag-icon-css/css/flag-icon.css';
 
-// Local modules
+// General local modules
 @import 'utils';
 @import 'misc';
 @import 'dashboard';
 @import 'login';
+@import 'overlays';
+
+// View-specific local modules
+@import 'views/tools';
+@import 'views/console';
+@import 'views/users';

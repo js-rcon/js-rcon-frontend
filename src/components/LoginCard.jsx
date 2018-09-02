@@ -78,7 +78,7 @@ export default class LoginCard extends React.Component {
     } else this.setState({ loggingIn: false }) // Stop animation
   }
 
-  render () {
+  componentDidMount () {
     // Detect enter button press
     window.onkeydown = keyEvent => {
       // this.state.loggingIn prevents spamming
@@ -87,7 +87,9 @@ export default class LoginCard extends React.Component {
         this.handleSubmit(document.getElementById('login-username').value, document.getElementById('login-password').value)
       }
     }
+  }
 
+  render () {
     return (
       <div>
         <Paper zDepth={1}>

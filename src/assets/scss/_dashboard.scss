@@ -2,162 +2,17 @@ body {
   overflow-x: hidden; // Prevent redundant scrollbar from appearing
 }
 
+// Navbar
 .top-bar {
   background-color: #FF9800 !important; // Material: deepOrange900
 }
 
+// Navbar icon
 .top-bar-icon {
   color: #FFFFFF !important;
 }
 
-// Debug text in light theme (Does not change automatically)
-.debug-text-light {
-  color: #000000;
-}
-
-// Debug text in dark theme (Does not change automatically)
-.debug-text-dark {
-  color: #FFFFFF;
-}
-
-.debug {
-  code {
-    color: gray;
-    word-wrap: break-word;
-  }
-
-  // Vertically aligns icon with text
-  .metric-icon {
-    display: inline-block;
-    vertical-align: middle;
-    padding-bottom: 3px;
-    padding-right: 5px;
-  }
-}
-
-.dashboard-tile {
-  padding: 20px;
-  min-height: 180px;
-  max-width: 360px;
-}
-
-.tool {
-  .title-container {
-    padding-bottom: 5px; 
-  }
-
-  .button-container {
-    padding-top: 10px;
-  }
-
-  .title {
-    margin: 0;
-    font-size: 23px;
-  }
-
-  // Vertically aligns icon with text 
-  .icon {
-    display: inline-block;
-    vertical-align: middle;
-    padding-bottom: 7px;
-    padding-right: 5px;
-    font-size: 30px;
-  }
-}
-
-.response-viewer {
-  .response {
-    max-height: 500px;
-    overflow-y: scroll;
-  }
-}
-
-.about {
-  .logo {
-    position: relative;
-    left: 50%;
-    transform: translate(-50%);
-    width: 100px;
-    height: auto;
-  }
-
-  .title {
-    padding-top: 10px;
-    text-align: center;
-    font-size: 30px;
-    color: #000000;
-  }
-
-  .subtitle {
-    text-align: center;
-    font-size: 17px;
-    color: #000000;
-  }
-
-  .content {
-    padding-top: 20px;
-    text-align: center;
-
-    a {
-      color: #3273dc;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 200ms;
-    }
-
-    a:hover {
-      color: #FF9800;
-      transition: all 200ms;
-    }
-
-    .flag {
-      position: relative;
-      margin-left: 2px;
-      margin-right: 2px;
-      transform: translateY(4px);
-      font-size: 25px;
-      border: 0.5mm solid #000000;
-      border-radius: 3px;
-    }
-  }
-}
-
-.licenses {
-  .title {
-    padding-bottom: 20px;
-    text-align: center;
-    font-size: 25px;
-    color: #000000;
-  }
-}
-
-.setting-label {
-  padding-bottom: 7px;
-
-  .text {
-    position: absolute;
-    transform: translate(0, 0.2mm);
-    color: rgba(0, 0, 0, 0.87);
-    padding-left: 5px;
-  }
-
-  .text-light {
-    color: #FFFFFF;
-  }
-
-  .icon {
-    color: #000000;
-  }
-
-  .icon-light {
-    color: #FFFFFF;
-  }
-}
-
-.label-child {
-  padding-top: 10px;
-}
-
+// Sidebar icon override when selected
 .sidebar-icon-selected {
   color: #FF9800;
   animation-duration: 2s;
