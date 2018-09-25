@@ -42,13 +42,16 @@ export default class LoginCard extends React.Component {
 
   // This is a bit of an ugly function, but I don't see a lot of better ways to do it
   preRequestCheck (user, pass) {
+    const stateRoot = { loggingIn: false } // Stops animation
+
     if (!user && !pass) {
-      this.setState({ emptyUser: true, emptyPass: true })
+      this.setState({ ...stateRoot, emptyUser: true, emptyPass: true })
+      return false
     } else if (!user) {
-      this.setState({ emptyUser: true })
+      this.setState({ ...stateRoot, emptyUser: true })
       return false
     } else if (!pass) {
-      this.setState({ emptyPass: true })
+      this.setState({ ...stateRoot, emptyPass: true })
       return false
     } else {
       return true
@@ -75,7 +78,7 @@ export default class LoginCard extends React.Component {
           this.setState({ loggingIn: false, failure: true })
         }
       })
-    } else this.setState({ loggingIn: false }) // Stop animation
+    }
   }
 
   componentDidMount () {

@@ -26,7 +26,8 @@ export default class Navbar extends React.Component {
     this.state = {
       leftMenuOpen: false,
       rightMenuOpen: false,
-      darkThemeEnabled: window.settings.darkThemeEnabled || false
+      darkThemeEnabled: window.settings.darkThemeEnabled || false,
+      selectedView: this.parseView(window.settings.defaultView || 'tools')
     }
   }
 
@@ -36,18 +37,28 @@ export default class Navbar extends React.Component {
     }
   }
 
+  parseView (viewId) {
+    switch (viewId) {
+      case 'tools': return 'Tools'
+      case 'users': return 'Connected Users'
+      case 'console': return 'RCON Console'
+      default: return 'Tools'
+    }
+  }
+
   toggleMenu () {
     emitOne('TOGGLE_SIDEBAR')
   }
 
   componentDidMount () {
     dispatcher.on('TOGGLE_THEME', enabled => this.setState({ darkThemeEnabled: enabled }))
+    dispatcher.on('REQUEST_VIEW_CHANGE', selectedView => this.setState({ selectedView: this.parseView(selectedView) }))
   }
 
   render () {
     return (
       <AppBar
-        title={'JS-RCON Dashboard'}
+        title={`JS-RCON Dashboard / ${this.state.selectedView}`}
         className={'top-bar'}
         titleStyle={this.state.darkThemeEnabled ? this.styles.darkThemeTitle : {}}
         iconElementLeft={
