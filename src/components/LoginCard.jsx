@@ -4,7 +4,6 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import { PulseLoader } from 'react-spinners'
 import * as colors from 'material-ui/styles/colors'
-
 import Spacer from './Spacer'
 import { login } from '../backend/api'
 import { emitOne } from '../backend/dispatcher'

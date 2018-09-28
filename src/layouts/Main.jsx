@@ -1,9 +1,7 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-
 import Routes from './Routes'
 import ErrorOverlay from '../components/ErrorOverlay' // Mounted here as it is used across routes
-
 import { status } from '../backend/api'
 import { dispatcher, emitOne } from '../backend/dispatcher'
 import { encryptToken } from '../backend/encryption'

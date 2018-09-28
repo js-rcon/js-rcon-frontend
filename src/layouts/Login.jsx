@@ -1,7 +1,5 @@
 import React from 'react'
-
 import LoginCard from '../components/LoginCard'
-
 import { dispatcher } from '../backend/dispatcher'
 
 export default class Login extends React.Component {

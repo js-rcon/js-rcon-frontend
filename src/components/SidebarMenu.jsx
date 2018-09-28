@@ -1,7 +1,6 @@
 import React from 'react'
 import Drawer from 'material-ui/Drawer'
 import MenuItem from 'material-ui/MenuItem'
-
 import { emitOne, dispatcher } from '../backend/dispatcher'
 
 export default class SidebarMenu extends React.Component {

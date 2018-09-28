@@ -8,6 +8,7 @@ import Tools from '../views/Tools'
 import Users from '../views/Users'
 import Console from '../views/Console'
 
+// Components
 import Navbar from '../components/Navbar'
 import SettingsOverlay from '../components/SettingsOverlay'
 import DebugOverlay from '../components/DebugOverlay'
@@ -18,6 +19,7 @@ import Notification from '../components/Notification'
 import Spacer from '../components/Spacer'
 import SidebarMenu from '../components/SidebarMenu'
 
+// Utilities
 import * as config from '../config'
 import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'

@@ -5,7 +5,6 @@ import FlatButton from 'material-ui/FlatButton'
 import { Card, CardHeader, CardText } from 'material-ui/Card'
 import xss from 'xss'
 import html from 'react-inner-html'
-
 import { licenses } from '../backend/licenses'
 import { emitOne, dispatcher } from '../backend/dispatcher'
 

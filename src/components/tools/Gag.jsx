@@ -1,7 +1,5 @@
 import React from 'react'
-
 import Tool from '../ToolBase'
-
 import { dispatcher } from '../../backend/dispatcher'
 
 export default class Gag extends React.Component {

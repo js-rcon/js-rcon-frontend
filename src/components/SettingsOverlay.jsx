@@ -4,8 +4,8 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Toggle from 'material-ui/Toggle'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-
 import { dispatcher, emitOne } from '../backend/dispatcher'
+
 class Row extends React.Component {
   render () {
     return (

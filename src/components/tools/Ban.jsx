@@ -1,7 +1,5 @@
 import React from 'react'
-
 import Tool from '../ToolBase'
-
 import { dispatcher } from '../../backend/dispatcher'
 
 export default class Ban extends React.Component {
@@ -21,7 +19,7 @@ export default class Ban extends React.Component {
   ]
 
   socketPayload = [
-    { property: 'op', value: 'BURN' },
+    { property: 'op', value: 'BAN' },
     { property: 'user', value: '#player-name' },
     { property: 'reason', value: '#reason' },
     { property: 'time', value: '#time' }

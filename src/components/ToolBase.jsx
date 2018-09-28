@@ -5,7 +5,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import { PulseLoader } from 'react-spinners'
 import * as colors from 'material-ui/styles/colors'
 import * as randstr from 'randstr'
-
 import { dispatcher, emitOne } from '../backend/dispatcher'
 
 class Icon extends React.Component {

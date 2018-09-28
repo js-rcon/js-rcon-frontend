@@ -1,6 +1,5 @@
 import React from 'react'
 import Dialog from 'material-ui/Dialog'
-
 import { dispatcher } from '../backend/dispatcher'
 
 // TODO: Eventually consider Sentry for automated error reporting

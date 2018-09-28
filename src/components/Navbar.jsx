@@ -2,9 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
-
 import NavbarMenu from './NavbarMenu'
-
 import { dispatcher, emitOne } from '../backend/dispatcher'
 
 class MenuButton extends React.Component {

@@ -3,7 +3,6 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import xss from 'xss'
 import html from 'react-inner-html'
-
 import { dispatcher } from '../backend/dispatcher'
 
 export default class ResponseViewer extends React.Component {

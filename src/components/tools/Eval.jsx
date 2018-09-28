@@ -1,5 +1,4 @@
 import React from 'react'
-
 import Tool from '../ToolBase'
 
 export default class Eval extends React.Component {
