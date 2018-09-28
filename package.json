@@ -59,7 +59,7 @@
     "prop-types": "^15.6.2",
     "randstr": "^1.0.6",
     "react": "^16.5.2",
-    "react-console-emulator": "^1.4.1",
+    "react-console-emulator": "^1.5.0",
     "react-dom": "^16.5.2",
     "react-inner-html": "^1.0.1",
     "react-router-dom": "^4.3.1",

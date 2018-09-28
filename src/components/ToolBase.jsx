@@ -173,29 +173,31 @@ export default class Tool extends React.Component {
 
   componentDidMount () {
     dispatcher.on('RECEIVED_SERVER_RESPONSE', response => {
-      this.setState({ sending: false }, () => {
-        if (this.state.lastSent !== response.id || response.id === 'error') { // Avoids unnecessary code execution while allowing errors
-          // Stringify content if not a string already
-          if (typeof response.c !== 'string') response.c = JSON.stringify(response.c)
+      if (this.state.sending) {
+        this.setState({ sending: false }, () => {
+          if (this.state.lastSent === response.id || response.id === 'error') { // Avoids unnecessary code execution while allowing errors
+            // Stringify content if not a string already
+            if (typeof response.c !== 'string') response.c = JSON.stringify(response.c)
 
-          // Explicitly display errors
-          if (response.id === 'error') emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
+            // Explicitly display errors
+            if (response.id === 'error') emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
 
-          // Determine what viewer to open
-          switch (response.id.split(':')[1]) {
-            case 'overlay':
-              emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
-              break
-            case 'toast':
-              emitOne('DISPLAY_RESPONSE_TOAST', { c: response.c, id: response.id })
-              break
-            default:
-              console.warn(`Unknown response viewer type "${response.id.split(':')[1]}"; using 'viewer'`)
-              emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
-              break
+            // Determine what viewer to open
+            switch (response.id.split(':')[1]) {
+              case 'overlay':
+                emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
+                break
+              case 'toast':
+                emitOne('DISPLAY_RESPONSE_TOAST', { c: response.c, id: response.id })
+                break
+              default:
+                console.warn(`Unknown response viewer type "${response.id.split(':')[1]}"; using 'viewer'`)
+                emitOne('OPEN_RESPONSE_VIEWER', { c: response.c, id: response.id })
+                break
+            }
           }
-        }
-      })
+        })
+      }
     })
   }
 

@@ -11,3 +11,6 @@ build
 
 # Developer configuration
 src/config.js
+
+# WIP user data
+example-user-data.json

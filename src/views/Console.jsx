@@ -19,46 +19,49 @@ export default class Console extends React.Component {
 
   componentDidMount () {
     dispatcher.on('RECEIVED_SERVER_RESPONSE', response => {
-      if (this.state.lastSent !== response.id || response.id === 'error') {
-        emitOne('DISPLAY_IN_CONSOLE', { c: response.c, id: response.id })
+      if (this.state.lastSent === response.id || response.id === 'error') {
+        const msg = xss(response.c.replaceAll('\n', '<br>'), {
+          whiteList: {
+            br: []
+          }
+        })
+
+        Terminal.manualPushToStdout(msg, true)
       }
     })
-  }
-
-  manualPushToStdout (message) {
-    const content = document.getElementsByName('react-console-emulator__content')[0]
-    const input = document.getElementsByName('react-console-emulator__inputArea')[0]
-
-    const messageElement = document.createElement('p')
-    messageElement.innerHTML = xss(message)
-    messageElement.style = 'margin: 0px; line-height: 21px;'
-
-    content.appendChild(messageElement)
-    content.appendChild(input)
   }
 
   render () {
     const commands = {
       help: {
-        description: 'Show a list of available commands.',
-        fn: () => {
-          return `
-            help - Show a list of available commands.<br>
-            rcon - Execute an RCON command on the server. - rcon [command]<br>
-            clear - Clear the terminal output.
-          `
+        fn: (...args) => {
+          Terminal.manualPushToStdout(`$ help${args ? ` ${args.join(' ')}` : ''}`)
+
+          Terminal.manualPushToStdout(`
+          help - Show a list of available commands.<br>
+          rcon - Execute an RCON command on the server. - rcon [command]<br>
+          clear - Clear the terminal output.
+          `, true)
         }
       },
       rcon: {
-        description: 'Execute an RCON command on the server.',
-        usage: 'rcon <command>',
-        fn: function () {
-          const input = Array.from(arguments).join(' ')
+        fn: (...args) => {
+          Terminal.manualPushToStdout(`$ rcon${args ? ` ${args.join(' ')}` : ''}`)
 
-          const payload = {
-            op: 'EVAL',
-            c: input,
-            id: randstr(16)
+          // The joiner makes sure only whitespace doesn't make it through
+          if (args.length < 1 || !args.join(' ').trim()) Terminal.manualPushToStdout('Please provide a command to execute!')
+          else {
+            const id = randstr(16)
+
+            const payload = {
+              op: 'EVAL',
+              c: args.join(' ').trim(), // Remove extraneous whitespace
+              id: id
+            }
+
+            this.setState({ lastSent: id }, () => {
+              window.socket.send(JSON.stringify(payload))
+            })
           }
         }
       },
@@ -71,11 +74,6 @@ export default class Console extends React.Component {
             if (child.tagName.toLowerCase() !== 'div') content.removeChild(child)
           })
         }
-      },
-      test: {
-        fn: () => {
-          this.manualPushToStdout('test')
-        }
       }
     }
 
@@ -86,6 +84,7 @@ export default class Console extends React.Component {
           className={'console'}
           dangerMode={true}
           noDefaults={true}
+          noAutomaticStdout={true}
           welcomeMessage={`Welcome to the RCON console. Type 'help' to get a list of commands.`}
         />
       </div>
