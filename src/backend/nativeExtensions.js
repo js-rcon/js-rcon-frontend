@@ -6,7 +6,7 @@ String.prototype.replaceAll = function (searchString, replaceString) {
 }
 
 // Allow getting multiple HTML elements with a single function call
-Document.prototype.getElementsById = function (elementIdArray) {
+Document.prototype.getElementsById = elementIdArray => {
   if (!Array.isArray(elementIdArray)) console.error(`Invalid parameter type '${typeof elementIdArray}' submitted to getElementsById, expected 'array'`)
   else {
     return elementIdArray.map(elementId => {
@@ -16,7 +16,8 @@ Document.prototype.getElementsById = function (elementIdArray) {
   }
 }
 
-Storage.prototype.removeItems = function (itemIdArray) {
+// Remove multiple items from sessionStorage at once
+Storage.prototype.removeItems = itemIdArray => {
   if (!Array.isArray(itemIdArray)) console.error(`Invalid parameter type '${typeof elementIdArray}' submitted to removeItems, expected 'array'`)
   else {
     itemIdArray.forEach(item => {
@@ -24,4 +25,9 @@ Storage.prototype.removeItems = function (itemIdArray) {
       else sessionStorage.removeItem(item)
     })
   }
+}
+
+// Abstracts the reverse NaN check to a more readable format
+window.isNumber = toCheck => {
+  return !isNaN(toCheck)
 }

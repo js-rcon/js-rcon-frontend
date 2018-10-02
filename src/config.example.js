@@ -1,19 +1,16 @@
 // Developer configuration file
 
-const config = {}
-
-config.apiUrl = 'http://localhost:8080'
-
-config.settingsTypes = {
-  darkThemeEnabled: {
-    type: 'boolean'
+const config = {
+  apiUrl: 'http://localhost:8080',
+  defaultSettings: {
+    darkThemeEnabled: false,
+    autoProtectEnabled: false,
+    defaultView: 'tools'
   },
-  autoProtectEnabled: {
-    type: 'boolean'
-  },
-  defaultView: {
-    type: 'string',
-    acceptedValues: ['tools', 'users', 'console']
+  settingsTypes: {
+    darkThemeEnabled: 'boolean',
+    autoProtectEnabled: 'boolean',
+    defaultView: 'string'
   }
 }
 

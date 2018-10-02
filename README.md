@@ -20,7 +20,9 @@ There is an example configuration file in the **src** folder called [config.exam
 
 | Value | Description | Type |
 | ----- | ----------- | ---- |
-| config.apiUrl | The URL from where the development version of the backend service is running. In development, both instances must be run from different addresses, but the backend already accounts for this. | String |
+| apiUrl | The URL from where the development version of the backend service is running. In development, both instances must be run from different addresses, but the backend already accounts for this. | String |
+| defaultSettings | The default settings to use when the end user accesses the frontend for the first time. These settings should be mirrored in settingsTypes. | Object |
+| settingsTypes | The types accepted for different settings. This is done to prevent tampering with the settings as they have to be exposed to the end user. |
 
 ## Technologies used
 

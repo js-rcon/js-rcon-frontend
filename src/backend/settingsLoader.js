@@ -2,8 +2,8 @@ import * as config from '../config'
 
 function loadSettings () {
   const setDefault = () => {
-    localStorage.setItem('settings', JSON.stringify({}))
-    window.settings = {}
+    localStorage.setItem('settings', JSON.stringify(config.defaultSettings))
+    window.settings = config.defaultSettings
   }
 
   // Not parsing yet to avoid parsing issues with malforming and to check JSON later
@@ -57,7 +57,7 @@ function typeCheck (valueToCheck, typeFromConfig) {
   else if (specialComparisons.includes(typeFromConfig)) {
     switch (typeFromConfig.toLowerCase()) {
       case 'array': return Array.isArray(valueToCheck)
-      case 'number': return !isNaN(valueToCheck) // WTF JavaScript
+      case 'number': return window.isNumber(valueToCheck)
       default: console.error(`Unknown special type declaration '${typeFromConfig.toLowerCase()}'`)
     }
   } else {

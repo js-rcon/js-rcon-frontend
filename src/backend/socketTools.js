@@ -54,7 +54,7 @@ function clearAndSetNewTimeout () {
   const oldTimeoutId = JSON.parse(sessionStorage.getItem('heartbeat'))
 
   // Anti-tamper
-  if (!isNaN(oldTimeoutId)) {
+  if (window.isNumber(oldTimeoutId)) {
     clearTimeout(oldTimeoutId)
     setHeartbeatTimeout()
   }
@@ -64,7 +64,7 @@ function clearHeartbeatTimeout () {
   const timeoutId = JSON.parse(sessionStorage.getItem('heartbeat'))
 
   // Anti-tamper
-  if (!isNaN(timeoutId)) {
+  if (window.isNumber(timeoutId)) {
     clearTimeout(timeoutId)
   }
 }

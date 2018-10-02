@@ -10,7 +10,7 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 import Main from './layouts/Main'
-import { dispatcher } from './backend/dispatcher'
+import { dispatcher, emitOne } from './backend/dispatcher'
 import { loadSettings } from './backend/settingsLoader'
 
 loadSettings()
@@ -29,12 +29,17 @@ export default class App extends React.Component {
       document.getElementsByTagName('html')[0].style = enabled ? 'background-color: #424242' : ''
       this.setState({ darkTheme: enabled })
     })
+
+    setInterval(() => {
+      // If window.settings is nulled or there has been any other tampering, reset
+      if (!window.settings || !localStorage.getItem('settings')) {
+        loadSettings() // loadSettings decides the appropriate approach
+        emitOne('REVERT_SETTINGS')
+      }
+    }, 5000)
   }
 
   render () {
-    // Update settings on each render
-    window.settings = localStorage.getItem('settings') ? JSON.parse(localStorage.getItem('settings')) : {}
-
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(this.state.darkTheme ? darkBaseTheme : lightBaseTheme)}>
         <HashRouter>

@@ -21,3 +21,4 @@ This is a list of the events that can be emitted within the application, along w
 | TOGGLE_LICENSES | Toggle between the license and about view in the about overlay. | None | None |
 | TOGGLE_SIDEBAR | Toggle the sidebar menu. | None | None |
 | REQUEST_VIEW_CHANGE | Emitted when a sidebar menu item is clicked and a new view needs to be rendered | requestedView | String |
+| REVERT_SETTINGS | Emitted when there has been some form of settings malfunction and settings have been reset. This event is used to communicate the change to the settings overlay to prevent inaccurate info being displayed. | None | None |

@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Toggle from 'material-ui/Toggle'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { dispatcher, emitOne } from '../backend/dispatcher'
+import * as config from '../config'
 
 class Row extends React.Component {
   render () {
@@ -50,12 +51,8 @@ export default class SettingsOverlay extends React.Component {
     super()
     this.state = {
       open: false,
-      settings: JSON.parse(localStorage.getItem('settings')) || {
-        darkThemeEnabled: false,
-        autoProtectEnabled: false,
-        defaultView: 'tools'
-      },
-      oldSettings: {}
+      settings: JSON.parse(localStorage.getItem('settings')),
+      oldSettings: config.defaultSettings
     }
 
     this.open = this.open.bind(this)
@@ -91,26 +88,32 @@ export default class SettingsOverlay extends React.Component {
   saveSettings () {
     localStorage.setItem('settings', JSON.stringify(this.state.settings))
     window.settings = this.state.settings
-    this.setState({ oldSettings: null })
+    this.setState({ oldSettings: this.state.settings })
     this.close()
   }
 
   revertSettings () {
-    // Send revert events
-    if (this.state.oldSettings) {
-      emitOne('TOGGLE_THEME', this.state.oldSettings.darkThemeEnabled)
-      emitOne('TOGGLE_AUTOPROTECT', this.state.oldSettings.autoProtectEnabled)
-    }
+    emitOne('TOGGLE_THEME', this.state.oldSettings.darkThemeEnabled)
+    emitOne('TOGGLE_AUTOPROTECT', this.state.oldSettings.autoProtectEnabled)
 
     // Revert to previously stored settings
     localStorage.setItem('settings', JSON.stringify(this.state.oldSettings))
 
-    this.setState({ oldSettings: null, settings: this.state.oldSettings })
+    this.setState({ oldSettings: this.state.oldSettings, settings: this.state.oldSettings })
     this.close()
+  }
+
+  manualRevert () {
+    // This function is only called when the localStorage or window settings have been tampered
+    // It resets the settings to their default states without showing it to the end user
+    emitOne('TOGGLE_THEME', config.defaultSettings.darkThemeEnabled)
+    emitOne('TOGGLE_AUTOPROTECT', config.defaultSettings.darkThemeEnabled)
+    this.setState({ settings: config.defaultSettings, oldSettings: config.defaultSettings })
   }
 
   componentDidMount () {
     dispatcher.on('OPEN_SETTINGS', () => this.open())
+    dispatcher.on('REVERT_SETTINGS', () => this.manualRevert())
   }
 
   render () {
