@@ -4,6 +4,7 @@ import Paper from 'material-ui/Paper'
 import { ColRoot, Col } from '../components/Layout'
 import UserList from '../components/users/UserList'
 import UserTable from '../components/users/UserTable'
+import UserDataHelp from '../components/users/UserDataHelp'
 
 // TODO: Remove when done
 import * as mockUsers from '../../example-user-data.json'
@@ -43,14 +44,17 @@ export default class Users extends React.Component {
 
   render () {
     return (
-      <ColRoot>
-        <Col>
-          <UserContainer component={<UserList playerData={this.state.playerData}/>}/>
-        </Col>
-        <Col>
-          <UserContainer component={<UserTable playerData={this.state.playerData}/>}/>
-        </Col>
-      </ColRoot>
+      <div>
+        <UserDataHelp/>
+        <ColRoot>
+          <Col>
+            <UserContainer component={<UserList playerData={this.state.playerData}/>}/>
+          </Col>
+          <Col>
+            <UserContainer component={<UserTable playerData={this.state.playerData}/>}/>
+          </Col>
+        </ColRoot>
+      </div>
     )
   }
 }
