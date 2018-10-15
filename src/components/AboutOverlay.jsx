@@ -12,6 +12,7 @@ class Link extends React.Component {
   render () {
     return (
       <a
+        className={this.props.darkTheme ? 'link-dark' : 'link-light'}
         href={this.props.to}
         target={'_blank'}
         tabIndex={'-1'}
@@ -61,7 +62,7 @@ class License extends React.Component {
 export default class AboutOverlay extends React.Component {
   constructor (props) {
     super(props)
-    this.state = { open: false, showLicenses: false }
+    this.state = { open: false, showLicenses: false, darkTheme: window.settings.darkThemeEnabled || false }
     this.open = this.open.bind(this)
     this.close = this.close.bind(this)
     this.toggleLicenseView = this.toggleLicenseView.bind(this)
@@ -98,9 +99,13 @@ export default class AboutOverlay extends React.Component {
     dispatcher.on('OPEN_ABOUT', () => this.open())
 
     dispatcher.on('TOGGLE_LICENSES', () => this.setState({ showLicenses: !this.state.showLicenses }))
+
+    dispatcher.on('TOGGLE_THEME', enabled => this.setState({ darkTheme: enabled }))
   }
 
   render () {
+    const dt = this.state.darkTheme
+
     const defaultActions = [
       <FlatButton
         label={'Close'}
@@ -130,19 +135,19 @@ export default class AboutOverlay extends React.Component {
             className={'logo'}
             src={require('../assets/images/logo.png')}
           />
-          <div className={'title'}>JS-RCON</div>
-          <div className={'subtitle'}>The powerful Source Dedicated Server administration GUI.</div>
+          <div className={dt ? 'title-dark' : 'title-light'}>JS-RCON</div>
+          <div className={dt ? 'subtitle-dark' : 'subtitle-light'}>The powerful Source Dedicated Server administration GUI.</div>
           <div className={'content'}>
             This program is fully powered by JavaScript from start to finish.
-            Built with <Link to={'https://reactjs.org'}>React</Link>, <Link to={'https://material-ui.com/'}>Material-UI</Link>, <Link to={'https://expressjs.com'}>Express</Link> and <Link to={'https://nodejs.org'}>Node.js</Link> - and no jQuery, of course.
+            Built with <Link darkTheme={dt} to={'https://reactjs.org'}>React</Link>, <Link darkTheme={dt} to={'https://material-ui.com/'}>Material-UI</Link>, <Link darkTheme={dt} to={'https://expressjs.com'}>Express</Link> and <Link darkTheme={dt} to={'https://nodejs.org'}>Node.js</Link> - and no jQuery, of course.
             {br}
-            Built in {fi} and {us} by <Link to={'https://github.com/linuswillner'}>Linus</Link> and <Link to={'https://github.com/caf203'}>Curtis</Link>.
+            Built in {fi} and {us} by <Link darkTheme={dt} to={'https://github.com/linuswillner'}>Linus</Link> and <Link darkTheme={dt} to={'https://github.com/caf203'}>Curtis</Link>.
             {br}
             JS-RCON is free open source software licensed under the<br/>
-            <Link to={'https://www.gnu.org/licenses/agpl-3.0.en.html'}>GNU Affero General Public License version 3</Link>. Source code available on <Link to={'https://github.com/js-rcon'}>GitHub</Link>.
+            <Link darkTheme={dt} to={'https://www.gnu.org/licenses/agpl-3.0.en.html'}>GNU Affero General Public License version 3</Link>. Source code available on <Link darkTheme={dt} to={'https://github.com/js-rcon'}>GitHub</Link>.
             {br}
             JS-RCON © 2018 Linus Willner and Curtis Fowler. Some rights reserved.<br/>
-            This program makes use of open source software. See <a onClick={() => emitOne('TOGGLE_LICENSES')}>applicable licenses</a>.
+            This program makes use of open source software. See <a className={dt ? 'link-dark' : 'link-light'} tabIndex={-1} onClick={() => emitOne('TOGGLE_LICENSES')}>applicable licenses</a>.
           </div>
         </div>
       </div>
@@ -150,7 +155,7 @@ export default class AboutOverlay extends React.Component {
 
     const licenses = (
       <div className={'licenses'}>
-        <div className={'title'}>Open source notices</div>
+        <div className={dt ? 'title-dark' : 'title-light'}>Open source technologies</div>
         {this.generateLicenses()}
       </div>
     )
