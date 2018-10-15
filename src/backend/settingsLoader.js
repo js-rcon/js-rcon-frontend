@@ -1,5 +1,15 @@
 import * as config from '../config'
 
+const alertStyle = [
+  'font-size: 15px',
+  'color: #F79E0C'
+].join(';')
+
+const successStyle = [
+  'font-size: 15px',
+  'color: #3EE514'
+].join(';')
+
 function loadSettings () {
   const setDefault = () => {
     localStorage.setItem('settings', JSON.stringify(config.defaultSettings))
@@ -16,19 +26,19 @@ function loadSettings () {
     try {
       parsedSettings = JSON.parse(localStorage.getItem('settings'))
     } catch (err) {
-      console.debug('Malformed JSON in settings, resetting.')
+      console.debug('%c🚨 Malformed JSON in settings, resetting.', alertStyle)
       setDefault()
       return
     }
 
     if (Array.isArray(parsedSettings)) { // Using isArray because typeof [] === 'object'
-      console.debug('Settings was array and not object, resetting.')
+      console.debug('%c🚨 Settings was array and not object, resetting.', alertStyle)
       setDefault()
     } else if (!validityCheck(parsedSettings)) {
-      console.debug('One or more settings was of wrong type, resetting.')
+      console.debug('%c🚨 One or more settings was of wrong type, resetting.', alertStyle)
       setDefault()
     } else {
-      console.debug('Settings loaded successfully from localStorage.')
+      console.debug('%c🔧 Settings loaded successfully.', successStyle)
       window.settings = parsedSettings
     }
   }

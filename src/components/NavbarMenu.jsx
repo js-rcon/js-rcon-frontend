@@ -28,7 +28,7 @@ export default class NavbarMenu extends React.Component {
         />
         {/* Debug (If in dev mode) */}
         {
-          process.env && process.env.NODE_ENV === 'development'
+          window.devMode
             ? <MenuItem
               primaryText={'Debug'}
               rightIcon={<i className={'material-icons'}>bug_report</i>}

@@ -11,7 +11,8 @@ const config = {
     darkThemeEnabled: 'boolean',
     autoProtectEnabled: 'boolean',
     defaultView: 'string'
-  }
+  },
+  enableDevToolsWarning: true
 }
 
 module.exports = config
