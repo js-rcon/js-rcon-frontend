@@ -65,20 +65,24 @@ export default class UserList extends React.Component {
   }
 
   generateListItems () {
-    return this.props.playerData.map((player, i) => {
-      const icon = this.getIconButton()
-      const menu = this.getIconMenu(player.Nick, icon)
+    if (this.props.playerData.length > 0) {
+      return this.props.playerData.map((player, i) => {
+        const icon = this.getIconButton()
+        const menu = this.getIconMenu(player.Nick, icon)
 
-      return <ListItem
-        key={i}
-        primaryText={`${player.Nick} (${player.SteamID})`}
-        secondaryText={`${player.IP} (${player.Country})`}
-        leftAvatar={<Avatar src={player.avatarmedium}/>}
-        rightIconButton={menu}
-        disableKeyboardFocus={true}
-        onClick={() => window.open(player.profileurl, '_blank')}
-      />
-    })
+        return <ListItem
+          key={i}
+          primaryText={`${player.Nick} (${player.SteamID})`}
+          secondaryText={`${player.IP} (${player.Country})`}
+          leftAvatar={<Avatar src={player.avatarmedium}/>}
+          rightIconButton={menu}
+          disableKeyboardFocus={true}
+          onClick={() => window.open(player.profileurl, '_blank')}
+        />
+      })
+    } else {
+      return 'No users are currently connected to the server.'
+    }
   }
 
   componentDidMount () {

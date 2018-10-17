@@ -25,14 +25,6 @@ import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
 import { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, clearHeartbeatTimeout, processHeartbeatTimeout } from '../backend/socketTools'
 
-/*
-  TODO: Different views:
-  Tool view (Current default)
-  Connected users view
-  Console view (https://www.npmjs.com/package/react-console-component, might need restyling)
-
-  Accessed via left drawer, needs to be made
-*/
 export default class Dashboard extends React.Component {
   constructor (props) {
     super(props)

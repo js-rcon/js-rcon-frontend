@@ -23,7 +23,7 @@ export default class UserDataHelp extends React.Component {
 
   getDescription (icon, color, description) {
     return (
-      <div>
+      <div className={'help-text-container'}>
         <FontIcon
           className={'material-icons'}
           color={color}
@@ -52,17 +52,22 @@ export default class UserDataHelp extends React.Component {
       />
     ]
 
-    // TODO: Finish this
     return (
       <Dialog
         title={'User data icon legend'}
+        titleClassName={'help-title'}
+        overlayClassName={'help-overlay'}
+        contentClassName={'help-container'}
         actions={dialogActions}
         modal={false}
         open={this.state.open}
         onRequestClose={this.close}
       >
-        {this.getDescription('lock', colors.red500, 'Test')}
-        {this.getDescription('lock', colors.red500, 'Test')}
+        {this.getDescription('lock_open', colors.green600, 'Public profile')}
+        {this.getDescription('lock', colors.orange400, 'Private profile')}
+        {this.getDescription('av_timer', colors.green600, 'Account older than 7 days')}
+        {this.getDescription('av_timer', colors.orange400, 'Account younger than 7 days')}
+        {this.getDescription('av_timer', colors.red500, 'Private profile, account age unknown')}
       </Dialog>
     )
   }

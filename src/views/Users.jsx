@@ -5,12 +5,7 @@ import { ColRoot, Col } from '../components/Layout'
 import UserList from '../components/users/UserList'
 import UserTable from '../components/users/UserTable'
 import UserDataHelp from '../components/users/UserDataHelp'
-
-// TODO: Remove when done
-import * as mockUsers from '../../example-user-data.json'
-
-// Views: One with a List for options, another with a Table to easily provide overview
-// Allow for actions via popover menu (Kick, ban, etc.)
+import { dispatcher } from '../backend/dispatcher'
 
 class UserContainer extends React.Component {
   render () {
@@ -25,7 +20,12 @@ class UserContainer extends React.Component {
   }
 }
 
-/*
+export default class Users extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { playerData: [] }
+  }
+
   componentDidMount () {
     dispatcher.on('RECEIVED_PLAYERS', () => {
       if (JSON.stringify(this.state.playerData) !== sessionStorage.getItem('playerData')) {
@@ -33,13 +33,6 @@ class UserContainer extends React.Component {
         this.setState({ playerData: JSON.parse(sessionStorage.getItem('playerData')) })
       }
     })
-  }
-*/
-
-export default class Users extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = { playerData: mockUsers.userData }
   }
 
   render () {

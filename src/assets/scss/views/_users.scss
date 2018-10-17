@@ -9,6 +9,23 @@
   margin-bottom: 15px;
 }
 
+.help-title {
+  text-align: center;
+}
+
+.help-container {
+  max-width: 500px !important;
+}
+
+.help-overlay {
+  opacity: 0 !important;
+}
+
+.help-text-container {
+  text-align: center;
+  padding-top: 10px;
+}
+
 .help-text {
   position: relative;
   padding-left: 10px;
