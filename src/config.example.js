@@ -12,7 +12,7 @@ const config = {
     autoProtectEnabled: 'boolean',
     defaultView: 'string'
   },
-  enableDevToolsWarning: true
+  enableDevToolsWarning: false
 }
 
 module.exports = config
