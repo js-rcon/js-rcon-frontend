@@ -3,6 +3,7 @@ import { HashRouter } from 'react-router-dom'
 
 import './assets/scss/main.scss' // Import styles
 import './backend/nativeExtensions' // Register globals
+import { registerDevToolsHook } from './backend/security'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
@@ -13,6 +14,7 @@ import Main from './layouts/Main'
 import { dispatcher, emitOne } from './backend/dispatcher'
 import { loadSettings } from './backend/settingsLoader'
 
+registerDevToolsHook()
 loadSettings()
 
 export default class App extends React.Component {

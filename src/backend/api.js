@@ -5,7 +5,7 @@ import { decryptToken } from './encryption'
 
 // In development, use configured API URL - in production both run on localhost
 const prodUrl = `http://localhost:${window.location.port}`
-const apiUrl = process.env && process.env.NODE_ENV === 'development' ? config.apiUrl : prodUrl
+const apiUrl = window.devMode ? config.apiUrl : prodUrl
 
 async function status () {
   let status = {

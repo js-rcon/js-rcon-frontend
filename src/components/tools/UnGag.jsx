@@ -43,12 +43,19 @@ export default class UnGag extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('RECEIVED_PLAYERS', () => {
+    const listener = () => {
       if (JSON.stringify(this.state.autoCompleteData) !== sessionStorage.getItem('players')) {
         // Only update if data has been modified
         this.setState({ autoCompleteData: JSON.parse(sessionStorage.getItem('players')) })
       }
-    })
+    }
+
+    this.listener = listener
+    dispatcher.on('RECEIVED_PLAYERS', listener)
+  }
+
+  componentWillUnmount () {
+    dispatcher.removeListener('RECEIVED_PLAYERS', this.listener)
   }
 
   render () {

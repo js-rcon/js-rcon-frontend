@@ -31,3 +31,5 @@ Storage.prototype.removeItems = itemIdArray => {
 window.isNumber = toCheck => {
   return !isNaN(toCheck)
 }
+
+window.devMode = process.env && process.env.NODE_ENV === 'development'

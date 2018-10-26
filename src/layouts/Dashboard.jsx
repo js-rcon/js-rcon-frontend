@@ -25,14 +25,6 @@ import { decryptToken } from '../backend/encryption'
 import { dispatcher, emitOne } from '../backend/dispatcher'
 import { socketBootup, storeMaps, storePlayers, setHeartbeatTimeout, clearHeartbeatTimeout, processHeartbeatTimeout } from '../backend/socketTools'
 
-/*
-  TODO: Different views:
-  Tool view (Current default)
-  Connected users view
-  Console view (https://www.npmjs.com/package/react-console-component, might need restyling)
-
-  Accessed via left drawer, needs to be made
-*/
 export default class Dashboard extends React.Component {
   constructor (props) {
     super(props)
@@ -52,10 +44,8 @@ export default class Dashboard extends React.Component {
     this.socketHandlers = this.socketHandlers.bind(this)
   }
 
-  devMode = process.env && process.env.NODE_ENV === 'development'
-
   // In production, the servers run on the same address
-  wssUrl = this.devMode ? config.apiUrl : `http://localhost:${window.location.port}`
+  wssUrl = window.devMode ? config.apiUrl : `http://localhost:${window.location.port}`
 
   notLoggedMessages = [
     'HEARTBEAT_RESPONSE',
@@ -150,7 +140,7 @@ export default class Dashboard extends React.Component {
       const message = JSON.parse(msg)
 
       // Log messages for debugging
-      if (this.devMode && !this.notLoggedMessages.includes(message.op)) console.log('Received WS message: ' + msg)
+      if (window.devMode && !this.notLoggedMessages.includes(message.op)) console.log('Received WS message: ' + msg)
 
       // Response handlers
       switch (message.op) {
@@ -224,7 +214,7 @@ export default class Dashboard extends React.Component {
         <ResponseToast/>
         <Notification/>
         <SidebarMenu/>
-        { process.env && process.env.NODE_ENV === 'development' ? debugOverlay : '' }
+        { window.devMode ? debugOverlay : '' }
         {/* Main interface */}
         <Navbar username={this.props.inheritedState.username}/>
         <Spacer top={30}/>

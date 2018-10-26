@@ -4,12 +4,8 @@ import Paper from 'material-ui/Paper'
 import { ColRoot, Col } from '../components/Layout'
 import UserList from '../components/users/UserList'
 import UserTable from '../components/users/UserTable'
-
-// TODO: Remove when done
-import * as mockUsers from '../../example-user-data.json'
-
-// Views: One with a List for options, another with a Table to easily provide overview
-// Allow for actions via popover menu (Kick, ban, etc.)
+import UserDataHelp from '../components/users/UserDataHelp'
+import { dispatcher } from '../backend/dispatcher'
 
 class UserContainer extends React.Component {
   render () {
@@ -24,33 +20,42 @@ class UserContainer extends React.Component {
   }
 }
 
-/*
+export default class Users extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { playerData: [] }
+  }
+
   componentDidMount () {
-    dispatcher.on('RECEIVED_PLAYERS', () => {
+    const listener = () => {
       if (JSON.stringify(this.state.playerData) !== sessionStorage.getItem('playerData')) {
         // Only update if data has been modified
         this.setState({ playerData: JSON.parse(sessionStorage.getItem('playerData')) })
       }
-    })
-  }
-*/
+    }
 
-export default class Users extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = { playerData: mockUsers.userData }
+    this.listener = listener
+    dispatcher.on('RECEIVED_PLAYERS', listener)
+  }
+
+  componentWillUnmount () {
+    // This is done to prevent state updates when unmounted (Component unmounts when view changes)
+    dispatcher.removeListener('RECEIVED_PLAYERS', this.listener)
   }
 
   render () {
     return (
-      <ColRoot>
-        <Col>
-          <UserContainer component={<UserList playerData={this.state.playerData}/>}/>
-        </Col>
-        <Col>
-          <UserContainer component={<UserTable playerData={this.state.playerData}/>}/>
-        </Col>
-      </ColRoot>
+      <div>
+        <UserDataHelp/>
+        <ColRoot>
+          <Col>
+            <UserContainer component={<UserList playerData={this.state.playerData}/>}/>
+          </Col>
+          <Col>
+            <UserContainer component={<UserTable playerData={this.state.playerData}/>}/>
+          </Col>
+        </ColRoot>
+      </div>
     )
   }
 }

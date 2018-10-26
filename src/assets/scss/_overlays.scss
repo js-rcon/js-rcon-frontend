@@ -8,6 +8,32 @@
   color: #FFFFFF;
 }
 
+// About overlay link in light theme (No auto change)
+.link-light {
+  color: #3273DC;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 200ms;
+}
+
+.link-light:hover {
+  color: #FF9800;
+  transition: all 200ms;
+}
+
+// About overlay link in dark theme (No auto change)
+.link-dark {
+  color: #FFFFFF;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 200ms;
+}
+
+.link-dark:hover {
+  color: #FF9800;
+  transition: all 200ms;
+}
+
 // Overlay
 .debug {
   code {
@@ -42,34 +68,35 @@
     height: auto;
   }
 
-  .title {
+  .title-light {
     padding-top: 10px;
     text-align: center;
     font-size: 30px;
     color: #000000;
   }
 
-  .subtitle {
+  .title-dark {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 30px;
+    color: #FFFFFF;
+  }
+
+  .subtitle-light {
     text-align: center;
     font-size: 17px;
     color: #000000;
   }
 
+  .subtitle-dark {
+    text-align: center;
+    font-size: 17px;
+    color: #FFFFFF;
+  }
+
   .content {
     padding-top: 20px;
     text-align: center;
-
-    a {
-      color: #3273dc;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 200ms;
-    }
-
-    a:hover {
-      color: #FF9800;
-      transition: all 200ms;
-    }
 
     .flag {
       position: relative;
@@ -85,11 +112,18 @@
 
 // Licenses submenu of overlay
 .licenses {
-  .title {
+  .title-light {
     padding-bottom: 20px;
     text-align: center;
     font-size: 25px;
     color: #000000;
+  }
+
+  .title-dark {
+    padding-bottom: 20px;
+    text-align: center;
+    font-size: 25px;
+    color: #FFFFFF;
   }
 }
 
