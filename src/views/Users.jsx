@@ -27,12 +27,20 @@ export default class Users extends React.Component {
   }
 
   componentDidMount () {
-    dispatcher.on('RECEIVED_PLAYERS', () => {
+    const listener = () => {
       if (JSON.stringify(this.state.playerData) !== sessionStorage.getItem('playerData')) {
         // Only update if data has been modified
         this.setState({ playerData: JSON.parse(sessionStorage.getItem('playerData')) })
       }
-    })
+    }
+
+    this.listener = listener
+    dispatcher.on('RECEIVED_PLAYERS', listener)
+  }
+
+  componentWillUnmount () {
+    // This is done to prevent state updates when unmounted (Component unmounts when view changes)
+    dispatcher.removeListener('RECEIVED_PLAYERS', this.listener)
   }
 
   render () {

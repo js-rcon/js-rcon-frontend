@@ -22,7 +22,7 @@ export default class ResponseViewer extends React.Component {
   }
 
   parseResponse (response) {
-    if (!response) return ''
+    if (!response) return 'Server returned empty response.'
 
     // Convert newlines to breaks
     response = response.replaceAll('\n', '<br>')

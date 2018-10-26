@@ -135,13 +135,14 @@ export default class Tool extends React.Component {
 
         if (fieldsAreIntact) {
           const fieldsInTool = fields.map(f => f.field)
-          const fieldsWithAC = this.props.autoCompletes.map(a => a.field)
+          const fieldsWithAC = this.props.autoCompletes ? this.props.autoCompletes.map(a => a.field) : []
 
           const fieldValues = {}
           const ACValues = {}
 
           fields.map(f => { fieldValues[f.field] = f.value }) // Format into { fieldId: value }
-          this.props.autoCompletes.map(a => { ACValues[a.field] = a.data }) // Format into { fieldId: autoCompleteData }
+          if (this.props.autoCompletes) this.props.autoCompletes.map(a => { ACValues[a.field] = a.data }) // Format into { fieldId: autoCompleteData }
+          // Using explicit if statement for readability
 
           // Check autocomplete validity if enabled (Avoids sending of invalid data to server)
           if (this.props.autoCompletes) {

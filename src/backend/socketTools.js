@@ -46,7 +46,7 @@ function mapConnectsAndDisconnects (oldInfo, newInfo) {
 }
 
 function setHeartbeatTimeout () {
-  const timeoutId = setTimeout(() => emitOne('NO_HEARTBEAT'), 7500)
+  const timeoutId = setTimeout(() => emitOne('NO_HEARTBEAT'), 10000)
   sessionStorage.setItem('heartbeat', JSON.stringify(timeoutId))
 }
 

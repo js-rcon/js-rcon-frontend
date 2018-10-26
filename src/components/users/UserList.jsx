@@ -23,16 +23,6 @@ export default class UserList extends React.Component {
     }
   }
 
-  getIconButton () {
-    return (
-      <IconButton
-        iconClassName={'material-icons'}
-        tooltip={'Actions'}
-        tooltipPosition={'bottom-center'}
-      >more_vert</IconButton>
-    )
-  }
-
   getIconMenu (playerName, iconButtonElement) {
     const p = playerName // For brevity
     return (
@@ -67,7 +57,7 @@ export default class UserList extends React.Component {
   generateListItems () {
     if (this.props.playerData.length > 0) {
       return this.props.playerData.map((player, i) => {
-        const icon = this.getIconButton()
+        const icon = <IconButton iconClassName={'material-icons'}>more_vert</IconButton>
         const menu = this.getIconMenu(player.Nick, icon)
 
         return <ListItem
