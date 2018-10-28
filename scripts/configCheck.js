@@ -3,28 +3,24 @@ const path = require('path')
 const download = require('download-file')
 const ora = require('ora')
 
-configCheck()
+const checkSpinner = ora('Checking for config file src/config.js...').start()
 
-function configCheck () {
-  const checkSpinner = ora('Checking for config file src/config.js...').start()
+const configExists = fs.existsSync(path.join(process.cwd(), 'src', 'config.js'))
+const defaultConfigExists = fs.existsSync(path.join(process.cwd(), 'src', 'config.example.js'))
 
-  const configExists = fs.existsSync(path.join(process.cwd(), 'src', 'config.js'))
-  const defaultConfigExists = fs.existsSync(path.join(process.cwd(), 'src', 'config.example.js'))
+if (!configExists) {
+  checkSpinner.text = 'Config file src/config.js not found. Checking for default configuration file src/config.example.js...'
 
-  if (!configExists) {
-    checkSpinner.text = 'Config file src/config.js not found. Checking for default configuration file src/config.example.js...'
-
-    if (!defaultConfigExists) {
-      checkSpinner.warn('Default configuration file src/config.example.js not found.')
-      downloadConfig()
-    } else {
-      checkSpinner.succeed('Default configuration file src/config.example.js found.')
-      copyFromDefaultConfig()
-    }
+  if (!defaultConfigExists) {
+    checkSpinner.warn('Default configuration file src/config.example.js not found.')
+    downloadConfig()
   } else {
-    checkSpinner.succeed('Config file src/config.js found.')
-    verifyFormat()
+    checkSpinner.succeed('Default configuration file src/config.example.js found.')
+    copyFromDefaultConfig()
   }
+} else {
+  checkSpinner.succeed('Config file src/config.js found.')
+  verifyFormat()
 }
 
 function verifyFormat () {
@@ -81,15 +77,16 @@ function downloadConfig () {
       downloadSpinner.text = 'Default configuration file downloaded into src/config.example.js. Writing src/config.js...'
 
       fs.copy(fsOptions.src, fsOptions.dest, err => {
-        if (err) downloadSpinner.fail(`Could not write configuration file `)
+        if (err) downloadSpinner.fail(`Could not write configuration file src/config.js!\n\n${err}`)
       })
+
       downloadSpinner.succeed('Default configuration file downloaded into src/config.js. Feel free to edit any settings you need.')
     }
   })
 }
 
 function copyFromDefaultConfig () {
-  const copySpinner = ora('Copying settings from "config.example.js"...').start()
+  const copySpinner = ora('Copying settings from config.example.js...').start()
 
   const options = {
     src: path.join(process.cwd(), 'src', 'config.example.js'),
