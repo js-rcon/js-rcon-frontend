@@ -56,7 +56,6 @@ export default class Beacon extends React.Component {
 
   componentWillUnmount () {
     dispatcher.removeListener('RECEIVED_PLAYERS', this.listener)
-    console.log(dispatcher.getListeners('RECEIVED_PLAYERS'))
   }
 
   render () {

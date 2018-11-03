@@ -4,7 +4,7 @@ import { emitOne } from './dispatcher'
 import { decryptToken } from './encryption'
 
 // In development, use configured API URL - in production both run on localhost
-const prodUrl = `http://localhost:${window.location.port}`
+const prodUrl = `${window.location.protocol.slice(0, -1)}://localhost:${window.location.port}`
 const apiUrl = window.devMode ? config.apiUrl : prodUrl
 
 async function status () {

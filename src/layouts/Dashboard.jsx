@@ -45,7 +45,7 @@ export default class Dashboard extends React.Component {
   }
 
   // In production, the servers run on the same address
-  wssUrl = window.devMode ? config.apiUrl : `http://localhost:${window.location.port}`
+  wssUrl = window.devMode ? config.apiUrl : `${window.location.protocol.slice(0, -1)}://localhost:${window.location.port}`
 
   notLoggedMessages = [
     'HEARTBEAT_RESPONSE',

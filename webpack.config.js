@@ -5,7 +5,8 @@ const ExtractCSSWebpackPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const OptimizeJSWebpackPlugin = require('terser-webpack-plugin')
 
-const dev = process.env.NODE_ENV !== 'production' || process.argv.indexOf('-p') === -1
+const dev = process.env.NODE_ENV !== 'production' || process.argv.includes('-p')
+const ssl = process.argv.includes('-s')
 
 const HTMLInjecterConfig = new HTMLWebpackPlugin({
   template: path.join(__dirname, '/src/index.html'),
@@ -40,6 +41,7 @@ module.exports = {
     port: '8000',
     quiet: true, // Remove console spam
     hot: true,
+    https: ssl,
     headers: {
       'Access-Control-Allow-Origin': '*' // Allow CORS
     }
