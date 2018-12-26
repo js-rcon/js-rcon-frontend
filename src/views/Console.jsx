@@ -15,10 +15,13 @@ export default class Console extends React.Component {
   constructor (props) {
     super(props)
     this.state = { lastSent: null }
+    this.terminal = React.createRef()
   }
 
   componentDidMount () {
     dispatcher.on('RECEIVED_SERVER_RESPONSE', response => {
+      const terminal = this.terminal.current
+
       if (this.state.lastSent === response.id || response.id === 'error') {
         const msg = xss(response.c.replaceAll('\n', '<br>'), {
           whiteList: {
@@ -26,30 +29,19 @@ export default class Console extends React.Component {
           }
         })
 
-        Terminal.manualPushToStdout(msg, true)
+        terminal.pushToStdout(msg)
       }
     })
   }
 
   render () {
     const commands = {
-      help: {
-        fn: (...args) => {
-          Terminal.manualPushToStdout(`$ help${args ? ` ${args.join(' ')}` : ''}`)
-
-          Terminal.manualPushToStdout(`
-          help - Show a list of available commands.<br>
-          rcon - Execute an RCON command on the server. - rcon [command]<br>
-          clear - Clear the terminal output.
-          `, true)
-        }
-      },
       rcon: {
+        description: 'Execute a command on the server.',
+        usage: 'rcon [command]',
         fn: (...args) => {
-          Terminal.manualPushToStdout(`$ rcon${args ? ` ${args.join(' ')}` : ''}`)
-
           // The joiner makes sure only whitespace doesn't make it through
-          if (args.length < 1 || !args.join(' ').trim()) Terminal.manualPushToStdout('Please provide a command to execute!')
+          if (!args.length || !args.join(' ').trim()) return 'No command provided!'
           else {
             const id = randstr(16)
 
@@ -64,27 +56,17 @@ export default class Console extends React.Component {
             })
           }
         }
-      },
-      clear: {
-        fn: () => {
-          const content = document.getElementsByName('react-console-emulator__content')[0]
-          const children = Array.from(content.children)
-
-          children.forEach(child => {
-            if (child.tagName.toLowerCase() !== 'div') content.removeChild(child)
-          })
-        }
       }
     }
 
     return (
       <div className={'console-container'}>
         <Terminal
+          ref={this.terminal}
           commands={commands}
           className={'console'}
+          contentClassName={'console-content'}
           dangerMode={true}
-          noDefaults={true}
-          noAutomaticStdout={true}
           welcomeMessage={`Welcome to the RCON console. Type 'help' to get a list of commands.`}
         />
       </div>

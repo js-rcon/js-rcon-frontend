@@ -1,7 +1,11 @@
 .console-container {
-  height: 85vh;
+  height: 84vh;
 
   .console {
     height: 100%;
+  }
+
+  .console-content {
+    height: 0 !important;
   }
 }

@@ -27,9 +27,4 @@ Storage.prototype.removeItems = itemIdArray => {
   }
 }
 
-// Abstracts the reverse NaN check to a more readable format
-window.isNumber = toCheck => {
-  return !isNaN(toCheck)
-}
-
 window.devMode = process.env && process.env.NODE_ENV === 'development'

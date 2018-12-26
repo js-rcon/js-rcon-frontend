@@ -67,7 +67,6 @@ function typeCheck (valueToCheck, typeFromConfig) {
   else if (specialComparisons.includes(typeFromConfig)) {
     switch (typeFromConfig.toLowerCase()) {
       case 'array': return Array.isArray(valueToCheck)
-      case 'number': return window.isNumber(valueToCheck)
       default: console.error(`Unknown special type declaration '${typeFromConfig.toLowerCase()}'`)
     }
   } else {
